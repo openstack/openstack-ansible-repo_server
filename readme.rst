@@ -1,22 +1,17 @@
-repo_server role
-#############
-:tags: openstack, cloud, ansible, repo_server
+OpenStack repo server
+#####################
+:tags: openstack, repo, server, cloud, ansible
 :category: \*nix
 
-repo_server Role
+Role to deploy a repository server for both python packages and git sources.
 
 .. code-block:: yaml
 
-    - name: repo_server role
-      hosts: "hosts"
+    - name: Setup repo servers
+      hosts: repo_all
       user: root
       roles:
-        - { role: "repo_server" }
-
-
-Note. The template role has the template name within it. Please change the name 
-throughout the code base.
-
-.. code-block:: bsah
-
-    find . -type f -exec sed -i 's/repo_server/CHANGE_ME_PLEASE/g' {} \;
+        - { role: "repo_server", tags: [ "repo-server" ] }
+      vars:
+        memcached_servers: 127.0.0.1:11211
+        memcached_encryption_key: secrete
