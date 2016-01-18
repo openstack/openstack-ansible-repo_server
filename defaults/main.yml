@@ -66,6 +66,7 @@ repo_apt_packages:
   - libkrb5-dev
   - libkmod2
   - libvirt-dev
+  - libjpeg-dev                # required to build pillow
   - libmariadbclient-dev
   - lxc-dev
   - lvm2
