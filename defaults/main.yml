@@ -17,6 +17,9 @@
 # compute the number of api workers to use.
 # repo_nginx_threads: 16
 
+## APT Cache Options
+cache_timeout: 600
+
 # Defines that the role will be deployed on a host machine
 is_metal: true
 
