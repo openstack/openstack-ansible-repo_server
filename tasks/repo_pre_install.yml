@@ -13,17 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Ensure ssh config
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-  with_items:
-    - { src: "sshd_config", dest: "/etc/ssh/sshd_config" }
-  notify:
-    - reload ssh
-  tags:
-    - repo-ssh
-
 - name: Drop rsyncd configuration file(s)
   copy:
     src: "{{ item.src }}"
