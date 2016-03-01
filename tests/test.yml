@@ -13,6 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- hosts: localhost
+  become: yes
+  pre_tasks:
+    # Make sure OS does not have a stale package cache.
+    - name: Update apt cache.
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
 - name: Playbook for pre-role testing 1of3
   hosts: 127.0.0.1
   connection: local
