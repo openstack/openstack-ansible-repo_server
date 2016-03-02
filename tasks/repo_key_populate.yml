@@ -14,8 +14,8 @@
 # limitations under the License.
 
 - name: Get public key contents and store as var
-  command: |
-    cat {{ repo_service_home_folder }}/.ssh/id_rsa.pub
+  slurp:
+    src: "{{ repo_service_home_folder }}/.ssh/id_rsa.pub"
   register: repo_pub
   changed_when: false
   tags:
@@ -24,7 +24,7 @@
 
 - name: Register a fact for the repo user pub key
   set_fact:
-     repo_pubkey: "{{ repo_pub.stdout }}"
+     repo_pubkey: "{{ repo_pub.content }}"
   tags:
     - repo-key
     - repo-key-create
