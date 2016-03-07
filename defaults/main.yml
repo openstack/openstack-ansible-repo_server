@@ -37,46 +37,10 @@ repo_auto_rebuild: false
 repo_recreate_keys: False
 
 repo_apt_packages:
-  - aptitude
-  - bridge-utils
-  - build-essential
-  - cgroup-lite
-  - cmake
-  - dmeventd
   - fcgiwrap
-  - git-core
-  - iptables
   - lsyncd
-  - lynx
   - nginx-extras
   - rsync
-  - sshpass
-  - tmux
-  - liberasurecode1
-  - liberasurecode-dev
-  - libldap2-dev
-  - libsasl2-dev
-  - libssl-dev
-  - libxslt1.1
-  - libpq-dev
-  - libffi-dev
-  - libsqlite3-dev
-  - libxml2-dev
-  - libxslt1-dev
-  - libkmod-dev
-  - libkrb5-dev
-  - libkmod2
-  - libvirt-dev
-  - libjpeg-dev                # required to build pillow
-  - libmariadbclient-dev
-  - lxc-dev
-  - lvm2
-  - python-dev
-  - python-software-properties
-  - sqlite3
-  - swig
-  - vlan
-  - uuid-dev
 
 # Main web server port
 repo_server_port: 8181
