@@ -1,9 +1,10 @@
-OpenStack repo server
-#####################
+OpenStack-Ansible Repo Server
+#############################
 :tags: openstack, repo, server, cloud, ansible
 :category: \*nix
 
-Role to deploy a repository server for both python packages and git sources.
+Ansible role that deploys a repository server for python packages and git
+sources.
 
 .. code-block:: yaml
 
