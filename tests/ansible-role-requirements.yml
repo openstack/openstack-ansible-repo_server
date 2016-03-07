@@ -18,7 +18,3 @@
   src: https://git.openstack.org/openstack/openstack-ansible-lxc_container_create
   scm: git
   version: master
-- name: memcached_server
-  src: https://git.openstack.org/openstack/openstack-ansible-memcached_server
-  scm: git
-  version: master

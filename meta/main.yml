@@ -31,4 +31,3 @@ galaxy_info:
 dependencies:
   - apt_package_pinning
   - pip_install
-  - memcached_server
