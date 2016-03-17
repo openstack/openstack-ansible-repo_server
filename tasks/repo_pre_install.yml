@@ -30,15 +30,3 @@
     - reload rsyncd
   tags:
     - repo-config
-
-- name: Drop base config file(s)
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('root') }}"
-    mode: "{{ item.mode|default('0644') }}"
-  with_items:
-    - { src: manual-init.override.j2, dest: "/etc/init/lxc-net.override" }
-  tags:
-    - repo-config
