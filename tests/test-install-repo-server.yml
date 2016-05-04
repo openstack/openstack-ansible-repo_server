@@ -13,17 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Prepare the user ssh keys
-- include: test-prepare-keys.yml
-
-# Prepare the host
-- include: test-prepare-host.yml
-
-# Run container clean up and build
-- include: test-prepare-containers.yml
-
-# Install repo server
-- include: test-install-repo-server.yml
-
-# Test repo server
-- include: test-repo-server-functional.yml
+- name: Install repo server
+  hosts: repo_all
+  user: root
+  gather_facts: true
+  roles:
+    - role: "{{ rolename | basename }}"
