@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,11 +23,17 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - trusty
+        - xenial
+    - name: EL
+      versions:
+        - 7
   categories:
     - cloud
     - python
     - development
     - openstack
 dependencies:
-  - apt_package_pinning
+  - role: apt_package_pinning
+    when:
+      - ansible_pkg_mgr == 'apt'
   - pip_install

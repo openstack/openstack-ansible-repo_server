@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+- name: Gather variables for each operating system
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
+- name: Check init system
+  command: cat /proc/1/comm
+  register: _pid1_name
+  tags:
+    - always
+
+- name: Set the name of pid1
+  set_fact:
+    pid1_name: "{{ _pid1_name.stdout }}"
+  tags:
+    - always
 
 - include: repo_pre_install.yml
 - include: repo_install.yml

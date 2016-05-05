@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,12 +35,6 @@ repo_auto_rebuild: false
 # If you want to regenerate the repo users SSH keys, on each run, set this var to True
 # Otherwise keys will be generated on the first run and not regenerated each run.
 repo_recreate_keys: False
-
-repo_apt_packages:
-  - fcgiwrap
-  - lsyncd
-  - nginx-extras
-  - rsync
 
 # Main web server port
 repo_server_port: 8181

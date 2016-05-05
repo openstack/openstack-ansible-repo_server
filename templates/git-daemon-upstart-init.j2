@@ -1,0 +1,9 @@
+start on startup
+stop on shutdown
+exec /usr/bin/git daemon \
+    --user=nobody \
+    --export-all \
+    --reuseaddr \
+    --base-path={{ repo_service_home_folder }}/repo/openstackgit/ \
+    {{ repo_service_home_folder }}/repo/openstackgit/
+respawn

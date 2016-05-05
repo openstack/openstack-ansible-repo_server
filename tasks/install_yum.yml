@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: install_apt.yml
-  when:
-    - ansible_pkg_mgr == 'apt'
+- name: Install repo server packages
+  yum:
+    pkg: "{{ item }}"
+    state: latest
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 5
+  with_items: "{{ repo_server_packages }}"
   tags:
-    - repo-apt-packages
-
-- include: install_yum.yml
-  when:
-    - ansible_pkg_mgr == 'yum'
-  tags:
-    - repo-yum-packages
+    - repo-packages

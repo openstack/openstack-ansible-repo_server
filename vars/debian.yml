@@ -1,5 +1,5 @@
 ---
-# Copyright 2016, Rackspace US, Inc.
+# Copyright 2016, Walmart Stores, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: install_apt.yml
-  when:
-    - ansible_pkg_mgr == 'apt'
-  tags:
-    - repo-apt-packages
+repo_nginx_pid: /var/run/nginx.pid
 
-- include: install_yum.yml
-  when:
-    - ansible_pkg_mgr == 'yum'
-  tags:
-    - repo-yum-packages
+git_daemon_path: /usr/lib/git-core/git-daemon
+rsyncd_service_name: rsync
+
+repo_server_packages:
+  - fcgiwrap
+  - git
+  - lsyncd
+  - nginx-extras
+  - rsync

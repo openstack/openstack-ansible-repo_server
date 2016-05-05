@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Init reload
+  command: "initctl reload-configuration"
+
 - name: reload nginx
   service:
     name: "nginx"
     state: restarted
+    enabled: yes
     pattern: "nginx"
 
 - name: reload rsyncd
   service:
-    name: "rsync"
+    name: "{{ rsyncd_service_name }}"
     state: restarted
+    enabled: yes
     pattern: "rsync"
 
 - name: reload fcgiwrap
@@ -41,4 +46,18 @@
   service:
     name: "lsyncd"
     state: restarted
+    enabled: yes
     pattern: "lsyncd"
+
+- name: reload git-daemon
+  service:
+    name: "git-daemon"
+    state: restarted
+    enabled: yes
+    pattern: "git daemon"
+
+- name: reload git socket
+  service:
+    name: "git.socket"
+    state: restarted
+    enabled: yes

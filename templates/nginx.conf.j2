@@ -1,5 +1,5 @@
 user {{ repo_service_user_name }} {{ repo_service_group_name }};
-pid /var/run/nginx.pid;
+pid {{ repo_nginx_pid }};
 
 {% set _api_threads = ansible_processor_vcpus|default(2) // 2 %}
 {% set api_threads = _api_threads if _api_threads > 0 else 1 %}

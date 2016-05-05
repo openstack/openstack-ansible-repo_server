@@ -1,5 +1,5 @@
 ---
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2016, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,6 +68,8 @@
     - { path: "/etc/lsyncd", state: "directory", mode: "0755" }
     - { path: "/var/log/lsyncd", state: "directory", mode: "0755" }
     - { path: "/etc/nginx/sites-enabled/default", state: "absent", mode: "0644" }
+    - { path: "/etc/nginx/sites-available", state: "directory", mode: "0644" }
+    - { path: "/etc/nginx/sites-enabled", state: "directory", mode: "0644" }
   tags:
     - pkg-repo-dirs
 
@@ -85,7 +87,7 @@
     - pkg-repo-nginx
     - pkg-repo-config
 
-- name: Change fcgiwrap GID/UID
+- name: Change fcgiwrap GID/UID - Debian
   lineinfile:
     dest: "/etc/init.d/fcgiwrap"
     regexp: "{{ item.regexp }}"
@@ -96,6 +98,7 @@
   notify:
     - reload nginx
     - reload fcgiwrap
+  when: ansible_os_family == "Debian"
   tags:
     - pkg-repo-nginx
     - pkg-repo-config
@@ -110,3 +113,36 @@
   tags:
     - pkg-repo-nginx
     - pkg-repo-config
+
+- name: Place git daemon upstart init script
+  template:
+    src: "git-daemon-upstart-init.j2"
+    dest: "/etc/init/git-daemon.conf"
+    mode: "0644"
+    owner: "root"
+    group: "root"
+  when:
+    - pid1_name == "init"
+    - ansible_distribution == "Ubuntu"
+  notify:
+    - Init reload
+    - reload git-daemon
+  tags:
+    - git-daemon-init
+
+- name: Place git daemon upstart init script
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "0644"
+    owner: "root"
+    group: "root"
+  with_items:
+    - { src: "git.service.j2", dest: "/lib/systemd/system/git@.service" }
+    - { src: "git.socket.j2", dest: "/lib/systemd/system/git.socket" }
+  when:
+    - pid1_name == "systemd"
+  notify:
+    - reload git socket
+  tags:
+    - git-daemon-init
