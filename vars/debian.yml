@@ -19,7 +19,6 @@ git_daemon_path: /usr/lib/git-core/git-daemon
 rsyncd_service_name: rsync
 
 repo_server_packages:
-  - fcgiwrap
   - git
   - lsyncd
   - nginx-extras

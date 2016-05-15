@@ -87,22 +87,6 @@
     - pkg-repo-nginx
     - pkg-repo-config
 
-- name: Change fcgiwrap GID/UID - Debian
-  lineinfile:
-    dest: "/etc/init.d/fcgiwrap"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-  with_items:
-    - { regexp: "^FCGI_SOCKET_OWNER=", line: 'FCGI_SOCKET_OWNER="{{ repo_service_user_name }}"' }
-    - { regexp: "^FCGI_SOCKET_GROUP=", line: 'FCGI_SOCKET_GROUP="{{ repo_service_group_name }}"' }
-  notify:
-    - reload nginx
-    - reload fcgiwrap
-  when: ansible_os_family == "Debian"
-  tags:
-    - pkg-repo-nginx
-    - pkg-repo-config
-
 - name: Enable openstack-slushee site
   file:
     src: "/etc/nginx/sites-available/openstack-slushee.vhost"

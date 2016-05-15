@@ -37,12 +37,6 @@
     enabled: yes
     pattern: "apt-cacher-ng"
 
-- name: reload fcgiwrap
-  service:
-    name: "fcgiwrap"
-    state: restarted
-    pattern: "fcgiwrap"
-
 - name: reload ssh
   service:
     name: "ssh"
