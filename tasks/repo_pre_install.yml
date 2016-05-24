@@ -22,10 +22,8 @@
 
 - name: Drop rsyncd configuration file(s)
   copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-  with_items:
-    - { src: "rsync.defaults", dest: "/etc/default/rsync" }
+    src: "rsync.defaults"
+    dest: "/etc/default/rsync"
   notify:
     - reload rsyncd
   tags:
