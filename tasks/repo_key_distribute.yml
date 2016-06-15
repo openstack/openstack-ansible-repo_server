@@ -17,7 +17,7 @@
   authorized_key:
     user: "{{ repo_service_user_name }}"
     key: "{{ hostvars[item]['repo_pubkey'] | b64decode }}"
-  with_items: groups['repo_all']
+  with_items: "{{ groups['repo_all'] }}"
   tags:
     - repo-key
     - repo-key-store
