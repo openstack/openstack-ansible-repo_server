@@ -38,3 +38,12 @@ repo_recreate_keys: False
 
 # Main web server port
 repo_server_port: 8181
+
+# Toggle the implementation of the Package Cache service
+repo_pkg_cache_enabled: true
+
+# Set the listening port for the Package Cache service
+repo_pkg_cache_port: 3142
+
+# Set the listening address for the PAckage Cache service
+repo_pkg_cache_bind: "0.0.0.0"

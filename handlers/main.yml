@@ -30,6 +30,13 @@
     enabled: yes
     pattern: "rsync"
 
+- name: reload acng
+  service:
+    name: "apt-cacher-ng"
+    state: restarted
+    enabled: yes
+    pattern: "apt-cacher-ng"
+
 - name: reload fcgiwrap
   service:
     name: "fcgiwrap"

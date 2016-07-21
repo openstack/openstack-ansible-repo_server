@@ -39,6 +39,8 @@
 - include: repo_pre_install.yml
 - include: repo_install.yml
 - include: repo_post_install.yml
+- include: repo_cacher.yml
+  when: repo_pkg_cache_enabled | bool
 
 - include: repo_key_populate.yml
 

@@ -23,3 +23,7 @@ repo_server_packages:
   - lsyncd
   - nginx
   - rsync
+
+repo_pkg_cache_server_packages:
+  - apt-cacher-ng
+
