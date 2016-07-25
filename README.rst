@@ -13,3 +13,4 @@ sources.
       user: root
       roles:
         - { role: "repo_server", tags: [ "repo-server" ] }
+
