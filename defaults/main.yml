@@ -20,8 +20,9 @@
 ## APT Cache Options
 cache_timeout: 600
 
-# Defines that the role will be deployed on a host machine
-is_metal: true
+# Set the package install state for distribution packages
+# Options are 'present' and 'latest'
+repo_server_package_state: "latest"
 
 repo_worker_connections: 1024
 repo_server_name: openstack-slushee

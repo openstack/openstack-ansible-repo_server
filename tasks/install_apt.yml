@@ -33,7 +33,7 @@
 - name: Install repo server packages
   apt:
     pkg: "{{ item }}"
-    state: latest
+    state: "{{ repo_server_package_state }}"
   register: install_packages
   until: install_packages|success
   retries: 5
