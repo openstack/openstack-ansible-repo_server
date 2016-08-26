@@ -18,11 +18,11 @@ repo_nginx_pid: /var/run/nginx.pid
 git_daemon_path: /usr/lib/git-core/git-daemon
 rsyncd_service_name: rsync
 
-repo_server_packages:
+repo_server_distro_packages:
   - git
   - lsyncd
   - nginx-extras
   - rsync
 
-repo_pkg_cache_server_packages:
+repo_pkg_cache_server_distro_packages:
   - apt-cacher-ng

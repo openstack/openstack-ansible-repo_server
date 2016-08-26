@@ -22,7 +22,7 @@
   until: install_packages|success
   retries: 5
   delay: 5
-  with_items: "{{ repo_pkg_cache_server_packages }}"
+  with_items: "{{ repo_pkg_cache_server_distro_packages }}"
   when:
     - ansible_pkg_mgr == 'yum'
     - repo_pkg_cache_enabled | bool
@@ -35,7 +35,7 @@
   until: install_packages|success
   retries: 5
   delay: 5
-  with_items: "{{ repo_pkg_cache_server_packages }}"
+  with_items: "{{ repo_pkg_cache_server_distro_packages }}"
   when:
     - ansible_pkg_mgr == 'apt'
     - repo_pkg_cache_enabled | bool

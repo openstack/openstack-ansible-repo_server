@@ -38,6 +38,6 @@
   until: install_packages|success
   retries: 5
   delay: 5
-  with_items: "{{ repo_server_packages | deprecated(repo_apt_packages, 'repo_apt_packages', 'repo_server_packages', 'Ocata') }}"
+  with_items: "{{ repo_server_distro_packages }}"
   tags:
     - repo-packages

@@ -21,6 +21,6 @@
   until: install_packages|success
   retries: 5
   delay: 5
-  with_items: "{{ repo_server_packages }}"
+  with_items: "{{ repo_server_distro_packages }}"
   tags:
     - repo-packages
