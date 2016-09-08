@@ -49,29 +49,61 @@
     - repo-key
     - repo-key-create
 
-- name: File and directory setup
+- name: Check if the git folder exists already
+  stat:
+    path: "{{ repo_service_home_folder }}/repo/openstackgit"
+  register: _git_folder
+
+- name: File and directory setup (non-root user)
   file:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('root') }}"
-    mode: "{{ item.mode }}"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+    mode: "{{ item.mode | default('2755') }}"
   with_items:
-    - { path: "{{ repo_service_home_folder }}", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "{{ repo_service_home_folder }}/.ssh", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2700" }
-    - { path: "{{ repo_service_home_folder }}/repo", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "{{ repo_service_home_folder }}/repo/links", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "{{ repo_service_home_folder }}/repo/os-releases", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "{{ repo_service_home_folder }}/repo/openstackgit", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "{{ repo_service_home_folder }}/repo/pools", state: "directory", owner: "{{ repo_service_user_name }}", group: "{{ repo_service_group_name }}", mode: "2755" }
-    - { path: "/etc/lsyncd", state: "directory", mode: "0755" }
-    - { path: "/var/log/lsyncd", state: "directory", mode: "0755" }
-    - { path: "/etc/nginx/sites-enabled/default", state: "absent", mode: "0644" }
-    - { path: "/etc/nginx/sites-available", state: "directory", mode: "0644" }
-    - { path: "/etc/nginx/sites-enabled", state: "directory", mode: "0644" }
+    - path: "{{ repo_service_home_folder }}"
+      state: "directory"
+    - path: "{{ repo_service_home_folder }}/.ssh"
+      state: "directory"
+      mode: "2700"
+    - path: "{{ repo_service_home_folder }}/repo"
+      state: "directory"
+    - path: "{{ repo_service_home_folder }}/repo/links"
+      state: "directory"
+    - path: "{{ repo_service_home_folder }}/repo/os-releases"
+      state: "directory"
+    - path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}"
+      state: "directory"
+    - path: "{{ repo_service_home_folder }}/repo/openstackgit"
+      state: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary('link', 'directory') }}"
+    - path: "{{ repo_service_home_folder }}/repo/pools"
+      state: "directory"
   tags:
     - pkg-repo-dirs
+
+- name: File and directory setup (root user)
+  file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+    owner: "root"
+    group: "root"
+    mode: "{{ item.mode | default(omit) }}"
+  with_items:
+    - path: "/etc/lsyncd"
+      state: "directory"
+      mode: "0755"
+    - path: "/var/log/lsyncd"
+      state: "directory"
+      mode: "0755"
+    - path: "/etc/nginx/sites-enabled/default"
+      state: "absent"
+    - path: "/etc/nginx/sites-available"
+      state: "directory"
+      mode: "0644"
+    - path: "/etc/nginx/sites-enabled"
+      state: "directory"
+      mode: "0644"
 
 - name: Drop NGINX configuration files
   template:
