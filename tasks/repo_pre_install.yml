@@ -20,6 +20,13 @@
     content: "nginx ALL=NOPASSWD: /etc/init.d/nginx start, /etc/init.d/nginx stop\n"
     dest: /etc/sudoers.d/nginx
 
+# This is so that the master repo server can stop the git daemon on the slaves
+# while data is syncing.
+- name: Allow nginx user to stop/start git-daemon via sudo
+  copy:
+    content: "nginx ALL=NOPASSWD: /etc/init.d/git-daemon start, /etc/init.d/git-daemon stop\n"
+    dest: /etc/sudoers.d/git-daemon
+
 - name: Drop rsyncd configuration file(s)
   copy:
     src: "rsync.defaults"

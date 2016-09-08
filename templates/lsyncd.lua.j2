@@ -587,8 +587,8 @@ sync {
         compress = true,
         acls = true,
         rsh = "/usr/bin/ssh -l {{ repo_service_user_name }} -i {{ repo_service_home_folder }}/.ssh/id_rsa -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=5",
-        precmd = "sudo /etc/init.d/nginx stop",
-        postcmd = "sudo /etc/init.d/nginx start"
+        precmd = "sudo /etc/init.d/nginx stop; sudo /etc/init.d/git-daemon stop",
+        postcmd = "sudo /etc/init.d/nginx start; sudo /etc/init.d/git-daemon start"
     }
 }
 
