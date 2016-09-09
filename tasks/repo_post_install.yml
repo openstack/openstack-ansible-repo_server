@@ -49,24 +49,19 @@
     - repo-key
     - repo-key-create
 
-- name: Check if the git folder exists already
-  stat:
-    path: "{{ repo_service_home_folder }}/repo/openstackgit"
-  register: _git_folder
-
 - name: File and directory setup (non-root user)
   file:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
-    mode: "{{ item.mode | default('2755') }}"
+    mode: "{{ item.mode | default('02755') }}"
   with_items:
     - path: "{{ repo_service_home_folder }}"
       state: "directory"
     - path: "{{ repo_service_home_folder }}/.ssh"
       state: "directory"
-      mode: "2700"
+      mode: "02700"
     - path: "{{ repo_service_home_folder }}/repo"
       state: "directory"
     - path: "{{ repo_service_home_folder }}/repo/links"
@@ -75,10 +70,26 @@
       state: "directory"
     - path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}"
       state: "directory"
-    - path: "{{ repo_service_home_folder }}/repo/openstackgit"
-      state: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary('link', 'directory') }}"
     - path: "{{ repo_service_home_folder }}/repo/pools"
       state: "directory"
+  tags:
+    - pkg-repo-dirs
+
+- name: Check if the git folder exists already
+  stat:
+    path: "{{ repo_service_home_folder }}/repo/openstackgit"
+  register: _git_folder
+  tags:
+    - pkg-repo-dirs
+
+- name: Git service data folder setup
+  file:
+    path: "{{ repo_service_home_folder }}/repo/openstackgit"
+    state: "directory"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+    mode: "02755"
+  when: not _git_folder.stat.exists or (_git_folder.stat.exists and not _git_folder.stat.islnk)
   tags:
     - pkg-repo-dirs
 
