@@ -84,11 +84,10 @@
 
 - name: Git service data folder setup
   file:
-    path: "{{ repo_service_home_folder }}/repo/openstackgit"
+    path: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary(_git_folder.stat.lnk_source, repo_service_home_folder + '/repo/openstackgit') }}"
     state: "directory"
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
-    follow: true
     recurse: true
   tags:
     - pkg-repo-dirs
