@@ -13,11 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Prepare the host
-- include: playbooks/test-setup-host.yml
+bridges:
+  - "br-mgmt"
 
-# Install repo server
-- include: test-install-repo-server.yml
-
-# Test repo server
-- include: test-repo-server-functional.yml
+ansible_python_interpreter: "/usr/bin/python2"
