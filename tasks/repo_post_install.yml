@@ -95,28 +95,6 @@
   tags:
     - pkg-repo-dirs
 
-# NOTE(cloudnull): The shell command is used instead of the file module because
-#                  we want specific permissions to be set within the given
-#                  path for both files and directories and the file module is
-#                  not capable of performing this task.
-- name: Ensure git directory permissions
-  shell: |
-    GIT_DIR="{{ repo_service_home_folder }}/repo/openstackgit"
-    BEFORE=$(find "${GIT_DIR}" -type d -exec ls -l {} \; | md5sum | awk '{print $1}')
-    find "${GIT_DIR}" -type d -exec chmod 02775 {} \;
-    find "${GIT_DIR}" -type f -exec chmod 00644 {} \;
-    AFTER=$(find "${GIT_DIR}" -type d -exec ls -l {} \; | md5sum | awk '{print $1}')
-    if [ "$BEFORE" = "$AFTER" ];then
-      exit 0
-    else
-      exit 3
-    fi
-  changed_when: perms.rc == 3
-  failed_when: perms.rc not in [0, 3]
-  register: perms
-  tags:
-    - pkg-repo-dirs
-
 - name: File and directory setup (root user)
   file:
     path: "{{ item.path }}"
