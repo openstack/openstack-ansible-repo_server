@@ -40,17 +40,18 @@
 - include: repo_install.yml
 - include: repo_post_install.yml
 - include: repo_cacher.yml
+  static: no
   when: repo_pkg_cache_enabled | bool
 
 - include: repo_key_populate.yml
 
 - include: repo_key_distribute.yml
-  when: >
-    groups.repo_all|length > 1
+  static: no
+  when: groups.repo_all|length > 1
 
 - include: repo_sync_manager.yml
-  when: >
-    inventory_hostname == groups['repo_all'][0]
+  static: no
+  when: inventory_hostname == groups['repo_all'][0]
 
 - name: Flush handlers
   meta: flush_handlers
