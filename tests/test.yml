@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Prepare the host
-- include: playbooks/test-setup-host.yml
+- include: common/test-setup-host.yml
 
 # Install repo server
 - include: test-install-repo-server.yml
