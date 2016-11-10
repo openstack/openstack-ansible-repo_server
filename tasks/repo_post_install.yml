@@ -151,7 +151,7 @@
     owner: "root"
     group: "root"
   when:
-    - pid1_name == "init"
+    - ansible_service_mgr == 'upstart'
     - ansible_distribution == "Ubuntu"
   notify:
     - Init reload
@@ -170,7 +170,7 @@
     - { src: "git.service.j2", dest: "/lib/systemd/system/git@.service" }
     - { src: "git.socket.j2", dest: "/lib/systemd/system/git.socket" }
   when:
-    - pid1_name == "systemd"
+    - ansible_service_mgr == 'systemd'
   notify:
     - reload git socket
   tags:
