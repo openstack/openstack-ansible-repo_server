@@ -51,3 +51,9 @@
         dest: /tmp/repo_server
         version: master
         accept_hostkey: yes
+    - name: Check apt-cacher-ng is running
+      command: "pgrep apt-cacher-ng"
+      register: pgrep_apt_cacher_ng
+      until: pgrep_apt_cacher_ng | success
+      retries: 5
+      delay: 2
