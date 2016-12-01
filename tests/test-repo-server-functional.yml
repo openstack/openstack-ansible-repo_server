@@ -17,9 +17,6 @@
   hosts: repo_all
   user: root
   tasks:
-    - name: Install httplib2 so we can use the uri module
-      pip:
-        name: httplib2
     - name: Check nginx is running
       shell: "ps auxf | grep nginx"
       register: ps_auxf_nginx
