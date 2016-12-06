@@ -18,6 +18,9 @@ PidFile: /var/run/apt-cacher-ng
 ExTreshold: 4
 LocalDirs: acng-doc /usr/share/doc/apt-cacher-ng
 PassThroughPattern: .*
+{% if proxy_env_url is defined %}
+Proxy: {{ proxy_env_url }}
+{% endif %}
 {% if ansible_distribution_release != "trusty" %}
 VfilePatternEx: ^/\?release=[0-9]+&arch=
 {% endif %}
