@@ -223,7 +223,6 @@ rsync.action = function( inlet )
 		config.source,
 		config.target
 	)
-    prepost(config, 'postcmd')
 end
 
 
@@ -298,7 +297,6 @@ rsync.init = function(event)
 			target
 		)
 	end
-    prepost(config, 'postcmd')
 end
 
 
@@ -542,6 +540,18 @@ rsync.prepare =
 
 end
 
+---
+--- Collect events and run postcmd after successful rsync
+---
+rsync.collect = function(agent, exitcode)
+  log('Normal', 'Collecting event, exitcode: ', exitcode)
+  local rc = default.collect(agent, exitcode)
+  if rc ~= 'again'
+  then
+    prepost(agent.config, 'postcmd')
+  end
+  return rc
+end
 
 --
 -- By default do deletes.
