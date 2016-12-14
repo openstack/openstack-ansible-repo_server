@@ -4,5 +4,5 @@ Documentation=man:git-daemon(1)
 
 [Service]
 User=nobody
-ExecStart=-{{ git_daemon_path }} --base-path={{ repo_service_home_folder }}/repo/openstackgit/ --export-all --user-path=public_git --syslog --inetd --verbose
+ExecStart=-{{ git_daemon_path }} --base-path={{ repo_git_cache_dir }}/ --export-all --user-path=public_git --syslog --inetd --verbose
 StandardInput=socket
