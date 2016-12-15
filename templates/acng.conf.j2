@@ -21,6 +21,4 @@ PassThroughPattern: .*
 {% if proxy_env_url is defined %}
 Proxy: {{ proxy_env_url }}
 {% endif %}
-{% if ansible_distribution_release != "trusty" %}
 VfilePatternEx: ^/\?release=[0-9]+&arch=
-{% endif %}

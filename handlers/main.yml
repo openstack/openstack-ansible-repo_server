@@ -21,41 +21,35 @@
     name: "nginx"
     state: restarted
     enabled: yes
-    pattern: "nginx"
 
 - name: reload rsyncd
   service:
     name: "{{ rsyncd_service_name }}"
     state: restarted
     enabled: yes
-    pattern: "rsync"
 
 - name: reload acng
   service:
     name: "apt-cacher-ng"
     state: restarted
     enabled: yes
-    pattern: "apt-cacher-ng"
 
 - name: reload ssh
   service:
     name: "ssh"
     state: restarted
-    pattern: "ssh"
 
 - name: reload lsyncd
   service:
     name: "lsyncd"
     state: restarted
     enabled: yes
-    pattern: "lsyncd"
 
 - name: reload git-daemon
   service:
     name: "git-daemon"
     state: restarted
     enabled: yes
-    pattern: "git daemon"
 
 - name: reload git socket
   service:

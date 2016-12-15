@@ -143,23 +143,7 @@
     - pkg-repo-nginx
     - pkg-repo-config
 
-- name: Place git daemon upstart init script
-  template:
-    src: "git-daemon-upstart-init.j2"
-    dest: "/etc/init/git-daemon.conf"
-    mode: "0644"
-    owner: "root"
-    group: "root"
-  when:
-    - ansible_service_mgr == 'upstart'
-    - ansible_distribution == "Ubuntu"
-  notify:
-    - Init reload
-    - reload git-daemon
-  tags:
-    - git-daemon-init
-
-- name: Place git daemon upstart init script
+- name: Place git daemon systemd init script
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
