@@ -13,19 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This is so that the master repo server can stop nginx on the slaves
-# while data is syncing.
+# This is so that the master repo server can perform pre and post rsync tasks
+# which may include stopping nginx on the slaves while data is syncing.
 - name: Allow nginx user to stop/start nginx via sudo
   copy:
-    content: "nginx ALL=NOPASSWD: /etc/init.d/nginx start, /etc/init.d/nginx stop\n"
+    content: "nginx ALL=NOPASSWD: {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh\n"
     dest: /etc/sudoers.d/nginx
-
-# This is so that the master repo server can stop the git daemon on the slaves
-# while data is syncing.
-- name: Allow nginx user to stop/start git-daemon via sudo
-  copy:
-    content: "nginx ALL=NOPASSWD: /etc/init.d/git-daemon start, /etc/init.d/git-daemon stop\n"
-    dest: /etc/sudoers.d/git-daemon
 
 - name: Drop rsyncd configuration file(s)
   copy:

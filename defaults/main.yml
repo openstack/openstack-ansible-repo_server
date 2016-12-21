@@ -46,5 +46,16 @@ repo_pkg_cache_enabled: true
 # Set the listening port for the Package Cache service
 repo_pkg_cache_port: 3142
 
-# Set the listening address for the PAckage Cache service
+# Set the listening address for the Package Cache service
 repo_pkg_cache_bind: "0.0.0.0"
+
+# Set the git file paths
+repo_git_cache_dirname: openstackgit
+repo_git_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_git_cache_dirname }}"
+
+# Set the Package Cache Service files path
+repo_pkg_cache_dirname: pkg-cache
+repo_pkg_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_pkg_cache_dirname }}"
+
+# Set the Package Cache Service owner
+repo_pkg_cache_owner: apt-cacher-ng
