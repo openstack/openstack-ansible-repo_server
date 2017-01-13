@@ -25,7 +25,13 @@
     - always
 
 - include: repo_pre_install.yml
+  tags:
+    - repo_server-install
+
 - include: repo_install.yml
+  tags:
+    - repo_server-install
+
 - include: repo_post_install.yml
 
 - include: repo_cacher.yml
@@ -33,12 +39,18 @@
   when: repo_pkg_cache_enabled | bool
 
 - include: repo_key_populate.yml
+  tags:
+    - repo_server-config
 
 - include: repo_key_distribute.yml
   when: groups.repo_all|length > 1
+  tags:
+    - repo_server-config
 
 - include: repo_sync_manager.yml
   when: inventory_hostname == groups['repo_all'][0]
+  tags:
+    - repo_server-config
 
 - name: Flush handlers
   meta: flush_handlers

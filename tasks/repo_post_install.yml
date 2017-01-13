@@ -20,6 +20,7 @@
     system: "yes"
   tags:
     - pkg-repo-group
+    - repo_server-install
 
 - name: Remove old key file(s) if found
   file:
@@ -33,6 +34,7 @@
   tags:
     - repo-key
     - repo-key-create
+    - repo_server-install
 
 - name: Create the nginx system user
   user:
@@ -48,6 +50,7 @@
     - pkg-repo-user
     - repo-key
     - repo-key-create
+    - repo_server-install
 
 - name: File and directory setup (non-root user)
   file:
@@ -77,6 +80,7 @@
       mode: "0775"
   tags:
     - pkg-repo-dirs
+    - repo_server-install
 
 - name: Check if the git folder exists already
   stat:
@@ -84,6 +88,7 @@
   register: _git_folder
   tags:
     - pkg-repo-dirs
+    - repo_server-install
 
 - name: Git service data folder setup
   file:
@@ -94,6 +99,7 @@
     recurse: true
   tags:
     - pkg-repo-dirs
+    - repo_server-install
 
 - name: File and directory setup (root user)
   file:
@@ -117,6 +123,8 @@
     - path: "/etc/nginx/sites-enabled"
       state: "directory"
       mode: "0644"
+  tags:
+    - repo_server-install
 
 - name: Drop NGINX configuration files
   template:
@@ -131,6 +139,7 @@
   tags:
     - pkg-repo-nginx
     - pkg-repo-config
+    - repo_server-config
 
 - name: Enable openstack-slushee site
   file:
@@ -142,6 +151,7 @@
   tags:
     - pkg-repo-nginx
     - pkg-repo-config
+    - repo_server-config
 
 - name: Place git daemon upstart init script
   template:
@@ -175,3 +185,4 @@
     - reload git socket
   tags:
     - git-daemon-init
+    - repo_server-config
