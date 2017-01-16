@@ -27,3 +27,5 @@ repo_server_distro_packages:
 repo_pkg_cache_server_distro_packages:
   - apt-cacher-ng
 
+repo_lsyncd_config_file: /etc/lsyncd.conf
+repo_lsyncd_defaults_file: /etc/sysconfig/lsyncd
