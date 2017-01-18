@@ -82,9 +82,33 @@
     - pkg-repo-dirs
     - repo_server-install
 
+- name: Drop repo pre/post command script
+  template:
+    src: repo_prepost_cmd.sh.j2
+    dest: "{{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh"
+    mode: "0750"
+    owner: "root"
+    group: "root"
+  tags:
+    - pkg-repo-config
+  when:
+    - ansible_service_mgr == 'systemd'
+
+- name: Drop repo pre/post command script
+  template:
+    src: repo_prepost_cmd_upstart.sh.j2
+    dest: "{{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh"
+    mode: "0750"
+    owner: "root"
+    group: "root"
+  tags:
+    - pkg-repo-config
+  when:
+    - ansible_service_mgr == 'upstart'
+
 - name: Check if the git folder exists already
   stat:
-    path: "{{ repo_service_home_folder }}/repo/openstackgit"
+    path: "{{ repo_git_cache_dir }}"
   register: _git_folder
   tags:
     - pkg-repo-dirs
@@ -92,7 +116,7 @@
 
 - name: Git service data folder setup
   file:
-    path: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary(_git_folder.stat.lnk_source, repo_service_home_folder + '/repo/openstackgit') }}"
+    path: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary(_git_folder.stat.lnk_source, repo_git_cache_dir) }}"
     state: "directory"
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"

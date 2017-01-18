@@ -4,6 +4,6 @@ exec /usr/bin/git daemon \
     --user=nobody \
     --export-all \
     --reuseaddr \
-    --base-path={{ repo_service_home_folder }}/repo/openstackgit/ \
+    --base-path={{ repo_git_cache_dir }}/ \
     {{ repo_service_home_folder }}/repo/openstackgit/
 respawn

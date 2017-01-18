@@ -46,9 +46,9 @@
 
 - name: Create cache directory
   file:
-    path: "{{ repo_service_home_folder }}/repo/pkg-cache"
+    path: "{{ repo_pkg_cache_dir }}"
     state: "directory"
-    owner: "apt-cacher-ng"
+    owner: "{{ repo_pkg_cache_owner }}"
     group: "{{ repo_service_group_name }}"
     mode: "02775"
   tags:
@@ -84,5 +84,3 @@
     dest: "/etc/apt-cacher-ng/acng.conf"
   notify:
     - reload acng
-  tags:
-    - repo_server-config

@@ -593,14 +593,41 @@ sync {
     rsync,
     source = "{{ repo_service_home_folder }}/repo",
     target = "{{ hostvars[node]['ansible_host'] }}:{{ repo_service_home_folder }}/repo",
+    exclude = {"{{ repo_pkg_cache_dirname }}", "{{ repo_git_cache_dir }}"},
     rsync = {
         compress = true,
         acls = true,
         rsh = "/usr/bin/ssh -l {{ repo_service_user_name }} -i {{ repo_service_home_folder }}/.ssh/id_rsa -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=5",
-        precmd = "sudo /etc/init.d/nginx stop; sudo /etc/init.d/git-daemon stop",
-        postcmd = "sudo /etc/init.d/nginx start; sudo /etc/init.d/git-daemon start"
+        precmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh pre-www",
+        postcmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh post-www"
     }
 }
-
+sync {
+    rsync,
+    source = "{{ repo_git_cache_dir }}",
+    target = "{{ hostvars[node]['ansible_host'] }}:{{ repo_git_cache_dir }}",
+    rsync = {
+        compress = true,
+        acls = true,
+        rsh = "/usr/bin/ssh -l {{ repo_service_user_name }} -i {{ repo_service_home_folder }}/.ssh/id_rsa -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=5",
+        precmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh pre-git",
+        postcmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh post-git"
+    }
+}
+{% if repo_pkg_cache_enabled | bool %}
+sync {
+    rsync,
+    source = "{{ repo_pkg_cache_dir }}",
+    target = "{{ hostvars[node]['ansible_host'] }}:{{ repo_pkg_cache_dir }}",
+    delete = false,
+    rsync = {
+        compress = true,
+        acls = true,
+        rsh = "/usr/bin/ssh -l {{ repo_service_user_name }} -i {{ repo_service_home_folder }}/.ssh/id_rsa -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=5",
+        precmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh pre-pkg",
+        postcmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh post-pkg"
+    }
+}
+{% endif %}
 {% endif %}
 {% endfor %}

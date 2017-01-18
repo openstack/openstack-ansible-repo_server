@@ -1,0 +1,35 @@
+#!/bin/bash
+#  This script is called by lsyncd to perform 'pre' and 'post' rsync tasks.
+#
+PKG_CACHE={{ repo_pkg_cache_dir }}
+
+function chg_owner {
+  NEW_OWNER=$1
+  if [ -d $PKG_CACHE ]; then
+    chown -R $NEW_OWNER $PKG_CACHE
+  fi
+}
+
+CMD=$1
+case $CMD in
+pre-www)
+  service nginx stop
+  ;;
+post-www)
+  service nginx start
+  ;;
+pre-git)
+  service git-daemon stop
+  ;;
+post-git)
+  service git-daemon start
+  ;;
+pre-pkg)
+  chg_owner {{ repo_service_user_name }}
+  ;;
+post-pkg)
+  chg_owner {{ repo_pkg_cache_owner }}
+  ;;
+*)
+  echo "Unknown command."
+esac
