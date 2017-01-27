@@ -18,6 +18,7 @@
     user: "{{ repo_service_user_name }}"
     key: "{{ hostvars[item]['repo_pubkey'] | b64decode }}"
   with_items: "{{ groups['repo_all'] }}"
+  when: hostvars[item]['repo_pubkey'] is defined
   tags:
     - repo-key
     - repo-key-store
