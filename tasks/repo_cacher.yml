@@ -13,25 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install repo caching server packages (yum)
-  yum:
-    pkg: "{{ item }}"
-    state: "{{ repo_server_package_state }}"
-    enablerepo: "epel-testing"
-  register: install_packages
-  until: install_packages|success
-  retries: 5
-  delay: 5
-  with_items: "{{ repo_pkg_cache_server_distro_packages }}"
+- name: Enable epel-testing repository for cacher packages
+  yum_repository:
+    name: epel-testing
+    enabled: yes
+    mirrorlist: 'http://mirrors.fedoraproject.org/mirrorlist?repo=testing-epel7&arch=$basearch'
+    description: 'EPEL Testing Repository'
   when:
     - ansible_pkg_mgr == 'yum'
-    - repo_pkg_cache_enabled | bool
   tags:
     - repo_server-install
 
-- name: Install repo caching server packages (apt)
-  apt:
-    pkg: "{{ item }}"
+- name: Install repo caching server packages
+  package:
+    name: "{{ item }}"
     state: "{{ repo_server_package_state }}"
   register: install_packages
   until: install_packages|success
@@ -39,7 +34,6 @@
   delay: 5
   with_items: "{{ repo_pkg_cache_server_distro_packages }}"
   when:
-    - ansible_pkg_mgr == 'apt'
     - repo_pkg_cache_enabled | bool
   tags:
     - repo_server-install
