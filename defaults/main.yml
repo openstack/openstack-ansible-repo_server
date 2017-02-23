@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# If ``repo_nginx_threads`` is unset the system will use half the number of available VCPUS to
-# compute the number of api workers to use.
-# repo_nginx_threads: 16
+## Cap the maximum number of threads / workers when a user value is unspecified.
+repo_nginx_threads_max: 16
+repo_nginx_threads: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
 
 ## APT Cache Options
 cache_timeout: 600
