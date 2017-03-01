@@ -26,5 +26,3 @@
     dest: "/etc/default/rsync"
   notify:
     - reload rsyncd
-  tags:
-    - repo-config
