@@ -20,6 +20,15 @@
   when:
     - ansible_pkg_mgr == 'apt'
 
+# NOTE: The pip_install role configures the RDO repository to be at a higher
+#       priority than EPEL. Packages from RDO will be preferred over EPEL.
+- name: Install EPEL repository
+  yum:
+    name: epel-release
+    state: "{{ repo_server_package_state }}"
+  when:
+    - ansible_pkg_mgr == 'yum'
+
 - name: Install repo server packages
   package:
     name: "{{ item }}"
