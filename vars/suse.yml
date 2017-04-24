@@ -1,5 +1,6 @@
 ---
 # Copyright 2016, Walmart Stores, Inc.
+# Copyright 2017, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-systemd_utils_prefix: "/lib/systemd"
+systemd_utils_prefix: "/usr/lib/systemd"
 
-repo_nginx_pid: /run/nginx.pid
+repo_nginx_pid: /var/run/nginx.pid
 
-git_daemon_path: /usr/libexec/git-core/git-daemon
+git_daemon_path: /usr/lib/git/git-daemon
 rsyncd_service_name: rsyncd
 
 repo_server_distro_packages:
@@ -29,5 +30,5 @@ repo_server_distro_packages:
 repo_pkg_cache_server_distro_packages:
   - apt-cacher-ng
 
-repo_lsyncd_config_file: /etc/lsyncd.conf
+repo_lsyncd_config_file: /etc/lsyncd/lsyncd.conf
 repo_lsyncd_defaults_file: /etc/sysconfig/lsyncd

@@ -24,6 +24,29 @@
   tags:
     - repo_server-install
 
+- name: Enable OBS:Servers:Proxy repository for apt-cacher-ng (SUSE)
+  zypper_repository:
+    refresh: yes
+    name: "OBS:Server:Proxy"
+    repo: http://download.opensuse.org/repositories/server:/proxy/openSUSE_Leap_{{ ansible_distribution_version }}
+  register: zypper_repository_added
+  when:
+    - ansible_pkg_mgr == 'zypper'
+  tags:
+    - repo_server-install
+
+# NOTE(hwoarang): We need to run this right after we add the repos and
+# before we install any packages so it can't be a handler unless we
+# move everything to pre_tasks
+- name: Refresh zypper repository (SUSE)
+  command: zypper --gpg-auto-import-keys ref
+  when:
+    - ansible_pkg_mgr == 'zypper'
+    - zypper_repository_added.changed
+  tags:
+    - skip_ansible_lint
+    - repo_server-install
+
 - name: Install repo caching server packages
   package:
     name: "{{ item }}"

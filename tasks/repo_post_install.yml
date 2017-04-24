@@ -172,8 +172,8 @@
     owner: "root"
     group: "root"
   with_items:
-    - { src: "git.service.j2", dest: "/lib/systemd/system/git@.service" }
-    - { src: "git.socket.j2", dest: "/lib/systemd/system/git.socket" }
+    - { src: "git.service.j2", dest: "{{ systemd_utils_prefix }}/system/git@.service" }
+    - { src: "git.socket.j2", dest: "{{ systemd_utils_prefix }}/system/git.socket" }
   when:
     - ansible_service_mgr == 'systemd'
   notify:
