@@ -24,12 +24,14 @@
   tags:
     - repo_server-install
 
-- name: Enable OBS:Servers:Proxy repository for apt-cacher-ng (SUSE)
+- name: Enable zypper repositories (SUSE)
   zypper_repository:
     refresh: yes
-    name: "OBS:Server:Proxy"
-    repo: http://download.opensuse.org/repositories/server:/proxy/openSUSE_Leap_{{ ansible_distribution_version }}
+    name: "{{ item.name }}"
+    repo: "{{ item.repo }}"
   register: zypper_repository_added
+  with_items:
+    - "{{ zypper_repositories }}"
   when:
     - ansible_pkg_mgr == 'zypper'
   tags:

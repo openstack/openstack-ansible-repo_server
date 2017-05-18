@@ -14,6 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+zypper_repositories:
+  # NOTE(hwoarang): apt-cacher-ng and liberasurecode do not exist for
+  # Leap < 42.3 so we need to grab them directly from the devel repo.
+  # Remove this when support for Leap < 42.3 is gone
+  - name: "OBS:Server:Proxy"
+    repo: http://download.opensuse.org/repositories/server:/proxy/openSUSE_Leap_{{ ansible_distribution_version }}
+  - name: "OBS:devel:libraries:c_c++"
+    repo: http://download.opensuse.org/repositories/devel:/libraries:/c_c++/openSUSE_Leap_{{ ansible_distribution_version }}/
+
 systemd_utils_prefix: "/usr/lib/systemd"
 
 repo_nginx_pid: /var/run/nginx.pid
