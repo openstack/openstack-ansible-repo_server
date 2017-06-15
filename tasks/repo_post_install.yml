@@ -45,12 +45,21 @@
     system: "yes"
     createhome: "yes"
     home: "{{ repo_service_home_folder }}"
-    generate_ssh_key: "yes"
   tags:
     - pkg-repo-user
     - repo-key
     - repo-key-create
     - repo_server-install
+
+- name: Generate the nginx system user ssh key
+  user:
+    name: "{{ repo_service_user_name }}"
+    generate_ssh_key: "yes"
+  tags:
+    - pkg-repo-user
+    - repo-key
+    - repo-key-create
+    - repo_server-config
 
 - name: File and directory setup (non-root user)
   file:
