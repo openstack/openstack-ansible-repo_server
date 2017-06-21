@@ -15,7 +15,7 @@
 
 - name: Install repo server packages
   package:
-    name: "{{ item }}"
+    name: "{{ repo_server_distro_packages }}"
     state: "{{ repo_server_package_state }}"
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
@@ -23,6 +23,5 @@
   until: install_packages|success
   retries: 5
   delay: 5
-  with_items: "{{ repo_server_distro_packages }}"
   tags:
     - repo-packages
