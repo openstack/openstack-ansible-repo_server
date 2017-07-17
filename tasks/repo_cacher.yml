@@ -96,6 +96,16 @@
   tags:
     - repo_server-install
 
+- name: create yum merged mirror list
+  shell: |
+    curl https://www.centos.org/download/full-mirrorlist.csv | sed 's/^.*"http:/http:/' | sed 's/".*$//' | grep ^http >/etc/apt-cacher-ng/centos_mirrors
+    echo "http://mirror.centos.org/centos/" >>/etc/apt-cacher-ng/centos_mirrors
+  when:
+    - ansible_pkg_mgr == 'yum'
+  tags:
+    - repo_server-config
+    - skip_ansible_lint
+
 - name: Drop acng.conf
   template:
     src: "acng.conf.j2"
