@@ -13,12 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Enable epel-testing repository for cacher packages
-  yum_repository:
-    name: epel-testing
-    enabled: yes
-    mirrorlist: 'http://mirrors.fedoraproject.org/mirrorlist?repo=testing-epel7&arch=$basearch'
-    description: 'EPEL Testing Repository'
+- name: Disable epel-testing repository for cacher packages
+  command: yum-config-manager --disable epel-testing
   when:
     - ansible_pkg_mgr == 'yum'
   tags:
