@@ -92,10 +92,12 @@
   tags:
     - repo_server-install
 
-- name: create yum merged mirror list
+- name: Create yum merged mirror list
   shell: |
     curl https://www.centos.org/download/full-mirrorlist.csv | sed 's/^.*"http:/http:/' | sed 's/".*$//' | grep ^http >/etc/apt-cacher-ng/centos_mirrors
     echo "http://mirror.centos.org/centos/" >>/etc/apt-cacher-ng/centos_mirrors
+  args:
+    warn: no
   when:
     - ansible_pkg_mgr == 'yum'
   tags:
