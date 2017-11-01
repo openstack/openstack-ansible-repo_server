@@ -47,6 +47,16 @@
   tags:
     - repo_server-install
 
+- name: Create log directory
+  file:
+    path: "{{ repo_service_log_dir }}"
+    state: "directory"
+    owner: "{{ repo_pkg_cache_owner }}"
+    group: "{{ repo_pkg_cache_group }}"
+    mode: "02775"
+  tags:
+    - repo_server-install
+
 - name: Stat the cache path
   stat:
     path: /var/cache/apt-cacher-ng
