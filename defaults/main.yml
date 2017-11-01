@@ -57,5 +57,9 @@ repo_git_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_git_cache_dirna
 repo_pkg_cache_dirname: pkg-cache
 repo_pkg_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_pkg_cache_dirname }}"
 
-# Set the Package Cache Service owner
+# Set the Package Cache Service owner and group
 repo_pkg_cache_owner: apt-cacher-ng
+repo_pkg_cache_group: apt-cacher-ng
+
+# Set the log directory
+repo_service_log_dir: /var/log/apt-cacher-ng
