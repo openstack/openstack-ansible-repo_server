@@ -31,8 +31,6 @@ repo_service_home_folder: /var/www
 repo_service_user_name: nginx
 repo_service_group_name: www-data
 
-repo_auto_rebuild: false
-
 # If you want to regenerate the repo users SSH keys, on each run, set this var to True
 # Otherwise keys will be generated on the first run and not regenerated each run.
 repo_recreate_keys: False

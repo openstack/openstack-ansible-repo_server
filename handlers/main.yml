@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Init reload
-  command: "initctl reload-configuration"
-
 - name: reload nginx
   service:
     name: "nginx"
@@ -33,11 +30,6 @@
     name: "apt-cacher-ng"
     state: restarted
     enabled: yes
-
-- name: reload ssh
-  service:
-    name: "ssh"
-    state: restarted
 
 - name: reload lsyncd
   service:
