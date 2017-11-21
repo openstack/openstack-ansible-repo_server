@@ -62,6 +62,10 @@
     - path: "{{ repo_service_home_folder }}/repo/venvs"
     - path: "/var/log/nginx"
       mode: "0775"
+    - path: "/var/log/pypiserver"
+      mode: "0775"
+    - path: "{{ repo_pypiserver_working_dir }}"
+      mode: "0775"
 
 - name: Drop repo pre/post command script
   template:
@@ -96,6 +100,8 @@
     - path: "/var/log/lsyncd"
     - path: "/etc/nginx/sites-enabled/default"
       state: "absent"
+    - path: "/etc/nginx/conf.d"
     - path: "/etc/nginx/sites-available"
     - path: "/etc/nginx/sites-enabled"
+    - path: "{{ repo_pypiserver_package_path }}"
 

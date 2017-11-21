@@ -13,15 +13,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install repo server packages
+- name: Install distro packages
   package:
     name: "{{ repo_server_distro_packages }}"
     state: "{{ repo_server_package_state }}"
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages
-  until: install_packages|success
+  until: install_packages | success
   retries: 5
   delay: 5
-  tags:
-    - repo-packages
+
+- name: Install required pip packages
+  pip:
+    name: "{{ repo_requires_pip_packages }}"
+    state: "{{ repo_server_pip_package_state }}"
+    extra_args: >-
+      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+      {{ pip_install_options | default('') }}
+  register: install_packages
+  until: install_packages | success
+  retries: 5
+  delay: 2
+
+- name: Install pip packages
+  pip:
+    name: "{{ repo_pypiserver_pip_packages }}"
+    state: "{{ repo_server_pip_package_state }}"
+    virtualenv: "{{ repo_pypiserver_bin | dirname }}"
+    virtualenv_site_packages: "no"
+    extra_args: >-
+      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+      {{ pip_install_options | default('') }}
+  register: install_packages
+  until: install_packages | success
+  retries: 5
+  delay: 2
+  notify:
+    - reload pypiserver
+

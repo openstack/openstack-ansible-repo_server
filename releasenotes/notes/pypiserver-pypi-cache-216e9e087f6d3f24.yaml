@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    The repo server now implements nginx as a reverse proxy for python
+    packages sourced from pypi. The initial query will be to a local
+    deployment of pypiserver in order to serve any locally built packages,
+    but if the package is not available locally it will retry
+    the query against pypi and cache the response.

@@ -1,0 +1,32 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=pypiserver
+After=network.target
+
+[Service]
+Type=simple
+User={{ repo_service_user_name }}
+Group={{ repo_service_group_name }}
+
+ExecStart={{ repo_pypiserver_bin }}/pypi-server {{ repo_pypiserver_start_options }}
+ExecStop=/bin/kill -TERM $MAINPID
+WorkingDirectory={{ repo_pypiserver_working_dir }}
+
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec=120
+TimeoutStartSec=3
+Restart=on-failure
+RestartSec=2
+
+# This creates a specific slice which all services will operate from
+#  The accounting options give us the ability to see resource usage through
+#  the `systemd-cgtop` command.
+Slice=pypiserver.slice
+CPUAccounting=true
+BlockIOAccounting=true
+MemoryAccounting=false
+TasksAccounting=true
+
+[Install]
+WantedBy=multi-user.target

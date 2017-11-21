@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+proxy_cache_path {{ repo_nginx_proxy_cache_path }};
+
+upstream pypiserver {
+    server localhost:8080;
+}
+
+upstream pypi {
+    server pypi.python.org:443;
+    keepalive 16;
+}

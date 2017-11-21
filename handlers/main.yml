@@ -79,3 +79,14 @@
   retries: 5
   delay: 2
 
+- name: reload pypiserver
+  service:
+    name: "pypiserver"
+    enabled: yes
+    state: restarted
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+  register: _restart
+  until: _restart | success
+  retries: 5
+  delay: 2
+

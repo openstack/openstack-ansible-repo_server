@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+## Verbosity Options
+debug: False
+
 ## Cap the maximum number of threads / workers when a user value is unspecified.
 repo_nginx_threads_max: 16
 repo_nginx_threads: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
@@ -20,9 +23,10 @@ repo_nginx_threads: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, rep
 ## APT Cache Options
 cache_timeout: 600
 
-# Set the package install state for distribution packages
+# Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 repo_server_package_state: "latest"
+repo_server_pip_package_state: "latest"
 
 repo_worker_connections: 1024
 repo_server_name: openstack-slushee
@@ -61,3 +65,42 @@ repo_pkg_cache_group: apt-cacher-ng
 
 # Set the log directory
 repo_service_log_dir: /var/log/apt-cacher-ng
+
+# Required packages to install on the host
+repo_requires_pip_packages:
+  - virtualenv
+  - virtualenv-tools
+
+# Set the list of packages for the pypiserver
+repo_pypiserver_pip_packages:
+ - "pypiserver==1.2.0"
+
+# Set the path to place all built python wheels
+# This is used by pypiserver to serve them
+repo_pypiserver_package_path: "{{ repo_service_home_folder }}/repo/python_packages"
+
+# Path to the pypiserver python virtualenv binaries
+repo_pypiserver_bin: "/openstack/venvs/pypiserver-1.2.0/bin"
+
+# Path to the pypiserver working directory
+repo_pypiserver_working_dir: "{{ repo_service_home_folder }}/pypiserver"
+
+# pypiserver service start options
+repo_pypiserver_start_options: >-
+  -i localhost
+  -p 8080
+  --log-file /var/log/pypiserver/pypiserver.log
+  --disable-fallback
+  {{ (debug | bool) | ternary('-vv', '-v') }}
+  {{ repo_pypiserver_package_path }}
+
+# config override var for systemd init file
+repo_pypiserver_init_overrides: {}
+
+# Set the options for the nginx proxy_cache_path directive.
+# The proxy cache is used for data downloaded from pypi.
+# The default is set to cache up to 1G worth of packages
+# for up to 1 month
+repo_nginx_proxy_cache_path: >-
+  /var/lib/nginx/pypi levels=1:2 keys_zone=pypi:16m inactive=1M max_size=1G
+
