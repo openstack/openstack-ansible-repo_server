@@ -13,15 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: create the system group
-  group:
-    name: "{{ repo_service_group_name }}"
-    state: "present"
-    system: "yes"
-  tags:
-    - pkg-repo-group
-    - repo_server-install
-
 - name: Remove old key file(s) if found
   file:
     path: "{{ item }}"
@@ -31,137 +22,25 @@
     - "{{ repo_service_home_folder }}/.ssh/id_rsa"
     - "{{ repo_service_home_folder }}/.ssh/id_rsa.pub"
   when: repo_recreate_keys | bool
-  tags:
-    - repo-key
-    - repo-key-create
-    - repo_server-install
-
-- name: Create the nginx system user
-  user:
-    name: "{{ repo_service_user_name }}"
-    group: "{{ repo_service_group_name }}"
-    comment: "Nginx repo user"
-    shell: "/bin/bash"
-    system: "yes"
-    createhome: "yes"
-    home: "{{ repo_service_home_folder }}"
-  tags:
-    - pkg-repo-user
-    - repo-key
-    - repo-key-create
-    - repo_server-install
 
 - name: Generate the nginx system user ssh key
   user:
     name: "{{ repo_service_user_name }}"
     generate_ssh_key: "yes"
-  tags:
-    - pkg-repo-user
-    - repo-key
-    - repo-key-create
-    - repo_server-config
-
-- name: File and directory setup (non-root user)
-  file:
-    path: "{{ item.path }}"
-    state: "{{ item.state }}"
-    owner: "{{ repo_service_user_name }}"
-    group: "{{ repo_service_group_name }}"
-    mode: "{{ item.mode | default('02755') }}"
-  with_items:
-    - path: "{{ repo_service_home_folder }}"
-      state: "directory"
-    - path: "{{ repo_service_home_folder }}/.ssh"
-      state: "directory"
-      mode: "02700"
-    - path: "{{ repo_service_home_folder }}/repo"
-      state: "directory"
-    - path: "{{ repo_service_home_folder }}/repo/links"
-      state: "directory"
-    - path: "{{ repo_service_home_folder }}/repo/os-releases"
-      state: "directory"
-    - path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}"
-      state: "directory"
-    - path: "{{ repo_service_home_folder }}/repo/pools"
-      state: "directory"
-    - path: "{{ repo_service_home_folder }}/repo/venvs"
-      state: "directory"
-    - path: "/var/log/nginx"
-      state: "directory"
-      mode: "0775"
-  tags:
-    - pkg-repo-dirs
-    - repo_server-install
-
-- name: Drop repo pre/post command script
-  template:
-    src: repo_prepost_cmd.sh.j2
-    dest: "{{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh"
-    mode: "0750"
-    owner: "root"
-    group: "root"
-  tags:
-    - pkg-repo-config
-    - repo_server-install
-
-- name: Check if the git folder exists already
-  stat:
-    path: "{{ repo_git_cache_dir }}"
-  register: _git_folder
-  tags:
-    - pkg-repo-dirs
-    - repo_server-install
-
-- name: Git service data folder setup
-  file:
-    path: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary(_git_folder.stat.lnk_source, repo_git_cache_dir) }}"
-    state: "directory"
-    owner: "{{ repo_service_user_name }}"
-    group: "{{ repo_service_group_name }}"
-    recurse: true
-  tags:
-    - pkg-repo-dirs
-    - repo_server-install
-
-- name: File and directory setup (root user)
-  file:
-    path: "{{ item.path }}"
-    state: "{{ item.state }}"
-    owner: "root"
-    group: "root"
-    mode: "{{ item.mode | default(omit) }}"
-  with_items:
-    - path: "/etc/lsyncd"
-      state: "directory"
-      mode: "0755"
-    - path: "/var/log/lsyncd"
-      state: "directory"
-      mode: "0755"
-    - path: "/etc/nginx/sites-enabled/default"
-      state: "absent"
-    - path: "/etc/nginx/sites-available"
-      state: "directory"
-      mode: "0644"
-    - path: "/etc/nginx/sites-enabled"
-      state: "directory"
-      mode: "0644"
-  tags:
-    - repo_server-install
 
 - name: Drop NGINX configuration files
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { src: "nginx.conf.j2", dest: "/etc/nginx/nginx.conf" }
-    - { src: "rsyncd.conf.j2", dest: "/etc/rsyncd.conf" }
-    - { src: "openstack-slushee.vhost.j2", dest: "/etc/nginx/sites-available/openstack-slushee.vhost" }
+    - src: "nginx.conf.j2"
+      dest: "/etc/nginx/nginx.conf"
+    - src: "rsyncd.conf.j2"
+      dest: "/etc/rsyncd.conf"
+    - src: "openstack-slushee.vhost.j2"
+      dest: "/etc/nginx/sites-available/openstack-slushee.vhost"
   notify:
     - reload nginx
-  tags:
-    - pkg-repo-nginx
-    - pkg-repo-config
-    - repo_server-config
 
 - name: Enable openstack-slushee site
   file:
@@ -170,10 +49,6 @@
     state: "link"
   notify:
     - reload nginx
-  tags:
-    - pkg-repo-nginx
-    - pkg-repo-config
-    - repo_server-config
 
 - name: Place git daemon systemd init script
   template:
@@ -183,12 +58,9 @@
     owner: "root"
     group: "root"
   with_items:
-    - { src: "git.service.j2", dest: "{{ systemd_utils_prefix }}/system/git@.service" }
-    - { src: "git.socket.j2", dest: "{{ systemd_utils_prefix }}/system/git.socket" }
-  when:
-    - ansible_service_mgr == 'systemd'
+    - src: "git.service.j2"
+      dest: "{{ systemd_utils_prefix }}/system/git@.service"
+    - src: "git.socket.j2"
+      dest: "{{ systemd_utils_prefix }}/system/git.socket"
   notify:
     - reload git socket
-  tags:
-    - git-daemon-init
-    - repo_server-config

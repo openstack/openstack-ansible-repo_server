@@ -33,6 +33,8 @@
     - repo_server-install
 
 - include: repo_post_install.yml
+  tags:
+    - repo_server-config
 
 - include: repo_cacher.yml
   static: no
