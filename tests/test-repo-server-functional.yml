@@ -23,34 +23,47 @@
       until: ps_auxf_nginx.stdout.find('master process') != -1
       retries: 5
       delay: 2
+      tags:
+        - skip_ansible_lint
+
     - name: Check service is available
       uri:
         url: "http://localhost:8181"
         status_code: 200
+
     - name: Check lsync is running
       shell: "ps auxf | grep lsync"
+      tags:
+        - skip_ansible_lint
+
     - name: Check repo directory exists
       stat:
         path: /var/www/repo
       register: repo_dir
+
     - name: Check role functions
       assert:
         that:
           - "repo_dir.stat.exists"
+
     - name: Clone repo for testing
       git:
         repo: "https://git.openstack.org/openstack/openstack-ansible-repo_server"
         dest: /var/www/repo/openstackgit/repo_server
         version: master
+
     - name: Check git daemon is functioning
       git:
         repo: "git://localhost/repo_server"
         dest: /tmp/repo_server
         version: master
         accept_hostkey: yes
+
     - name: Check apt-cacher-ng is running
       command: "pgrep apt-cacher-ng"
       register: pgrep_apt_cacher_ng
       until: pgrep_apt_cacher_ng | success
       retries: 5
       delay: 2
+      tags:
+        - skip_ansible_lint
