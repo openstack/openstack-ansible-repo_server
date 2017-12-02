@@ -3,7 +3,7 @@
 proxy_cache_path {{ repo_nginx_proxy_cache_path }};
 
 upstream pypiserver {
-    server localhost:8080;
+    server localhost:{{ repo_pypiserver_port }};
 }
 
 upstream pypi {

@@ -42,6 +42,9 @@ repo_recreate_keys: False
 # Main web server port
 repo_server_port: 8181
 
+# Pypi Server port
+repo_pypiserver_port: 8280
+
 # Toggle the implementation of the Package Cache service
 repo_pkg_cache_enabled: true
 
@@ -88,7 +91,7 @@ repo_pypiserver_working_dir: "{{ repo_service_home_folder }}/pypiserver"
 # pypiserver service start options
 repo_pypiserver_start_options: >-
   -i localhost
-  -p 8080
+  -p {{ repo_pypiserver_port }}
   --log-file /var/log/pypiserver/pypiserver.log
   --disable-fallback
   {{ (debug | bool) | ternary('-vv', '-v') }}
