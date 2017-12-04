@@ -7,6 +7,6 @@ upstream pypiserver {
 }
 
 upstream pypi {
-    server pypi.python.org:443;
+    server {{ repo_nginx_pypi_upstream }};
     keepalive 16;
 }
