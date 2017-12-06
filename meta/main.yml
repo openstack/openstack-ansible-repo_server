@@ -28,7 +28,7 @@ galaxy_info:
         - 7
     - name: opensuse
       versions:
-        - all
+        - 42.3
   categories:
     - cloud
     - python
