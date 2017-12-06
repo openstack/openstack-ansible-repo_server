@@ -20,31 +20,6 @@
   tags:
     - repo_server-install
 
-- name: Enable zypper repositories (SUSE)
-  zypper_repository:
-    refresh: yes
-    name: "{{ item.name }}"
-    repo: "{{ item.repo }}"
-  register: zypper_repository_added
-  with_items:
-    - "{{ zypper_repositories }}"
-  when:
-    - ansible_pkg_mgr == 'zypper'
-  tags:
-    - repo_server-install
-
-# NOTE(hwoarang): We need to run this right after we add the repos and
-# before we install any packages so it can't be a handler unless we
-# move everything to pre_tasks
-- name: Refresh zypper repository (SUSE)
-  command: zypper --gpg-auto-import-keys ref
-  when:
-    - ansible_pkg_mgr == 'zypper'
-    - zypper_repository_added.changed
-  tags:
-    - skip_ansible_lint
-    - repo_server-install
-
 - name: Install repo caching server packages
   package:
     name: "{{ repo_pkg_cache_server_distro_packages }}"
