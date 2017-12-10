@@ -76,11 +76,11 @@ repo_requires_pip_packages:
 
 # Set the list of packages for the pypiserver
 repo_pypiserver_pip_packages:
- - "pypiserver==1.2.0"
+ - "pypiserver[cache]==1.2.0"
 
 # Set the path to place all built python wheels
 # This is used by pypiserver to serve them
-repo_pypiserver_package_path: "{{ repo_service_home_folder }}/repo/python_packages"
+repo_pypiserver_package_path: "{{ repo_service_home_folder }}/pools"
 
 # Path to the pypiserver python virtualenv binaries
 repo_pypiserver_bin: "/openstack/venvs/pypiserver-1.2.0/bin"
@@ -109,4 +109,3 @@ repo_nginx_pypi_upstream: "pypi.python.org:443"
 # for up to 1 month
 repo_nginx_proxy_cache_path: >-
   /var/lib/nginx/pypi levels=1:2 keys_zone=pypi:16m inactive=1M max_size=1G
-
