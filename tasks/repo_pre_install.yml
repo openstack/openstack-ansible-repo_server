@@ -51,6 +51,7 @@
     group: "{{ repo_service_group_name }}"
     mode: "{{ item.mode | default('02755') }}"
   with_items:
+    - path: "{{ repo_git_cache_dir }}"
     - path: "{{ repo_service_home_folder }}"
     - path: "{{ repo_service_home_folder }}/.ssh"
       mode: "02700"
@@ -74,19 +75,6 @@
     mode: "0750"
     owner: "root"
     group: "root"
-
-- name: Check if the git folder exists already
-  stat:
-    path: "{{ repo_git_cache_dir }}"
-  register: _git_folder
-
-- name: Git service data folder setup
-  file:
-    path: "{{ (_git_folder.stat.exists and _git_folder.stat.islnk) | ternary(_git_folder.stat.lnk_source, repo_git_cache_dir) }}"
-    state: "directory"
-    owner: "{{ repo_service_user_name }}"
-    group: "{{ repo_service_group_name }}"
-    recurse: true
 
 - name: File and directory setup (root user)
   file:
