@@ -72,7 +72,6 @@ repo_service_log_dir: /var/log/apt-cacher-ng
 # Required packages to install on the host
 repo_requires_pip_packages:
   - virtualenv
-  - virtualenv-tools
 
 # Set the list of packages for the pypiserver
 repo_pypiserver_pip_packages:
