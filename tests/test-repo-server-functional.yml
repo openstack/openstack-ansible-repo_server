@@ -50,13 +50,13 @@
       git:
         repo: "https://git.openstack.org/openstack/openstack-ansible-repo_server"
         dest: /var/www/repo/openstackgit/repo_server
-        version: master
+        version: stable/queens
 
     - name: Check git daemon is functioning
       git:
         repo: "git://localhost/repo_server"
         dest: /tmp/repo_server
-        version: master
+        version: stable/queens
         accept_hostkey: yes
 
     - name: Check apt-cacher-ng is running
