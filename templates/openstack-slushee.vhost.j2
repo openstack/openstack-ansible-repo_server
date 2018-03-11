@@ -25,7 +25,11 @@ server {
     # http://linuxplayer.org/2013/06/nginx-try-files-on-multiple-named-location-or-server
     location @pypi {
         proxy_set_header Host pypi.python.org;
+        {% if repo_nginx_pypi_upstream | match('.*:443$') %}
         proxy_pass https://pypi;
+        {% else %}
+        proxy_pass http://pypi;
+        {% endif %}
     }
 
     location /simple {
