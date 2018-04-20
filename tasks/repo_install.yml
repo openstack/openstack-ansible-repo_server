@@ -55,19 +55,44 @@
   retries: 5
   delay: 2
 
-- name: Install pip packages
-  pip:
-    name: "{{ repo_pypiserver_pip_packages }}"
-    state: "{{ repo_server_pip_package_state }}"
-    virtualenv: "{{ repo_pypiserver_bin | dirname }}"
-    virtualenv_site_packages: "no"
-    extra_args: >-
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages | success
-  retries: 5
-  delay: 2
-  notify:
-    - reload pypiserver
+# Note(odyssey4me):
+# To cater for a situation where the pip packages are changing, but the repo
+# does not yet have the package built, we need to ensure that this task can
+# fetch from pypi. To do this we try the local repo first, then fall back to
+# using pypi.
+- name: Try installing from the repo first, then fall back to using pypi
+  block:
+    - name: Install pip packages (from repo)
+      pip:
+        name: "{{ repo_pypiserver_pip_packages }}"
+        state: "{{ repo_server_pip_package_state }}"
+        virtualenv: "{{ repo_pypiserver_bin | dirname }}"
+        virtualenv_site_packages: "no"
+        extra_args: >-
+          {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+          {{ pip_install_options | default('') }}
+      register: install_packages
+      until: install_packages | success
+      retries: 5
+      delay: 2
+      notify:
+        - reload pypiserver
+  rescue:
+    - name: Install pip packages (from pypi mirror)
+      pip:
+        name: "{{ repo_pypiserver_pip_packages }}"
+        state: "{{ repo_server_pip_package_state }}"
+        virtualenv: "{{ repo_pypiserver_bin | dirname }}"
+        virtualenv_site_packages: "no"
+        extra_args: >-
+          --index-url {{ repo_build_pip_default_index | default('https://pypi.python.org/simple') }}
+          --trusted-host {{ (repo_build_pip_default_index | default('https://pypi.python.org/simple')) | netloc_no_port }}
+          {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+          {{ pip_install_options | default('') }}
+      register: install_packages
+      until: install_packages | success
+      retries: 5
+      delay: 2
+      notify:
+        - reload pypiserver
 
