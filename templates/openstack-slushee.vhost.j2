@@ -44,6 +44,14 @@ server {
         error_page 404 = @pypi;
     }
 
+    location /+f {
+        {% if repo_nginx_pypi_upstream | match('.*:443$') %}
+        proxy_pass https://pypi;
+        {% else %}
+        proxy_pass http://pypi;
+        {% endif %}
+    }
+
     location / {
         root {{ repo_service_home_folder }}/repo/;
         autoindex on;
