@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Disable epel-testing repository for cacher packages
-  command: yum-config-manager --disable epel-testing
-  when:
-    - ansible_pkg_mgr == 'yum'
-  tags:
-    - repo_server-install
-
 - name: Install repo caching server packages
   package:
     name: "{{ repo_pkg_cache_server_distro_packages }}"
