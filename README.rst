@@ -17,5 +17,8 @@ sources and package caching for deb/rpm.
 Documentation for the project can be found at:
 `<https://docs.openstack.org/openstack-ansible-repo_server/latest/>`_
 
+Release notes for the project can be found at:
+`<https://docs.openstack.org/releasenotes/openstack-ansible-repo_server/>`_
+
 The project home is at:
   https://launchpad.net/openstack-ansible
