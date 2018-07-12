@@ -20,7 +20,7 @@
   when:
     - ansible_pkg_mgr in ['yum', 'dnf']
   register: _add_yum_keys
-  until: _add_yum_keys  is success
+  until: _add_yum_keys is success
   retries: 5
   delay: 2
 
@@ -60,7 +60,7 @@
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages
-  until: install_packages  is success
+  until: install_packages is success
   retries: 5
   delay: 5
 
@@ -91,7 +91,7 @@
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
   register: install_packages
-  until: install_packages  is success
+  until: install_packages is success
   retries: 5
   delay: 2
 
@@ -112,7 +112,7 @@
           {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
           {{ pip_install_options | default('') }}
       register: install_packages
-      until: install_packages  is success
+      until: install_packages is success
       retries: 5
       delay: 2
       notify:
@@ -130,7 +130,7 @@
           {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
           {{ pip_install_options | default('') }}
       register: install_packages
-      until: install_packages  is success
+      until: install_packages is success
       retries: 5
       delay: 2
       notify:
