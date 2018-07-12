@@ -18,7 +18,7 @@
     name: "{{ repo_pkg_cache_server_distro_packages }}"
     state: "{{ repo_server_package_state }}"
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 5
   when:
