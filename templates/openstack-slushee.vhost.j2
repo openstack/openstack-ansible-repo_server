@@ -6,50 +6,18 @@ server {
     access_log /var/log/nginx/{{ repo_server_name }}.access.log gzip buffer=32k;
     error_log /var/log/nginx/{{ repo_server_name }}.error.log notice;
 
-    # Allow cached content to be used even when the upstream source is not available.
-    proxy_cache pypi;
-    proxy_cache_key $uri;
-    proxy_cache_lock on;
-    proxy_cache_revalidate on;
-    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
-
-    proxy_http_version 1.1;
-    proxy_set_header Host $host:$server_port;
-    proxy_set_header Connection "";
-    proxy_set_header Accept-Encoding "";
-
-    # Rewrite any http redirects to use relative to proxy
-    proxy_redirect ~https?://pypi.python.org(.*) $1;
-
-    # Fallback mechanism from:
-    # http://linuxplayer.org/2013/06/nginx-try-files-on-multiple-named-location-or-server
-    location @pypi {
-        proxy_set_header Host pypi.python.org;
-        {% if repo_nginx_pypi_upstream | match('.*:443$') %}
-        proxy_pass https://pypi;
-        {% else %}
-        proxy_pass http://pypi;
-        {% endif %}
-    }
-
     location /simple {
-        proxy_intercept_errors on;
+        proxy_set_header  Host $host:$server_port;
+        proxy_set_header  X-Forwarded-Proto $scheme;
+        proxy_set_header  X-Real-IP $remote_addr;
         proxy_pass http://pypiserver;
-        error_page 404 = @pypi;
     }
 
     location /packages {
-        proxy_intercept_errors on;
+        proxy_set_header  Host $host:$server_port;
+        proxy_set_header  X-Forwarded-Proto $scheme;
+        proxy_set_header  X-Real-IP $remote_addr;
         proxy_pass http://pypiserver;
-        error_page 404 = @pypi;
-    }
-
-    location /+f {
-        {% if repo_nginx_pypi_upstream | match('.*:443$') %}
-        proxy_pass https://pypi;
-        {% else %}
-        proxy_pass http://pypi;
-        {% endif %}
     }
 
     location / {
