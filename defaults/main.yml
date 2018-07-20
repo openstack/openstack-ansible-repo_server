@@ -99,12 +99,3 @@ repo_pypiserver_start_options: >-
 # config override var for systemd init file
 repo_pypiserver_init_overrides: {}
 
-# nginx host:port for pypi reverse proxy
-repo_nginx_pypi_upstream: "pypi.python.org:443"
-
-# Set the options for the nginx proxy_cache_path directive.
-# The proxy cache is used for data downloaded from pypi.
-# The default is set to cache up to 1G worth of packages
-# for up to 1 month
-repo_nginx_proxy_cache_path: >-
-  /var/lib/nginx/pypi levels=1:2 keys_zone=pypi:16m inactive=1M max_size=1G

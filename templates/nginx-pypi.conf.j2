@@ -1,12 +1,5 @@
 # {{ ansible_managed }}
 
-proxy_cache_path {{ repo_nginx_proxy_cache_path }};
-
 upstream pypiserver {
     server localhost:{{ repo_pypiserver_port }};
-}
-
-upstream pypi {
-    server {{ repo_nginx_pypi_upstream }};
-    keepalive 16;
 }
