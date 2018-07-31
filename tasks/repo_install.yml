@@ -77,24 +77,6 @@
       - "/usr/local/lib/python2.7/site-packages"
   register: _virtualenv_support
 
-# TODO(odyssey4me):
-# We force a reinstall of the required pip packages when the
-# virtualenv_support folder is absent. This is to ensure that
-# we're able to create the venv properly for pypiserver.
-# The state ternary filter can be removed in Rocky as this is
-# only required for Pike->Queens upgrades.
-- name: Install required pip packages
-  pip:
-    name: "{{ repo_requires_pip_packages }}"
-    state: "{{ (_virtualenv_support['matched'] | int > 0) | ternary(repo_server_pip_package_state, 'forcereinstall') }}"
-    extra_args: >-
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages is success
-  retries: 5
-  delay: 2
-
 # Note(odyssey4me):
 # To cater for a situation where the pip packages are changing, but the repo
 # does not yet have the package built, we need to ensure that this task can
