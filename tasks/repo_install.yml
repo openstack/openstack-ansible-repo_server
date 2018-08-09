@@ -77,6 +77,11 @@
       - "/usr/local/lib/python2.7/site-packages"
   register: _virtualenv_support
 
+- name: Create the virtualenv (if it does not exist)
+  command: "virtualenv --never-download --no-site-packages {{ repo_pypiserver_bin | dirname }}"
+  args:
+    creates: "{{ repo_pypiserver_bin }}/activate"
+
 # Note(odyssey4me):
 # To cater for a situation where the pip packages are changing, but the repo
 # does not yet have the package built, we need to ensure that this task can
