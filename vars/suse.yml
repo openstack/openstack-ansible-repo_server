@@ -25,6 +25,7 @@ repo_server_distro_packages:
   - git-daemon
   - lsyncd
   - nginx
+  - openssh
   - rsync
 
 repo_pkg_cache_server_distro_packages:

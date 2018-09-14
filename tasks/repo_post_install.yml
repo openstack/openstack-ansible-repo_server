@@ -28,6 +28,14 @@
     name: "{{ repo_service_user_name }}"
     generate_ssh_key: "yes"
 
+- name: Enable SSHD
+  systemd:
+    name: sshd
+    state: started
+    enabled: yes
+    masked: no
+    daemon_reload: yes
+
 - name: Drop NGINX configuration files
   template:
     src: "{{ item.src }}"
