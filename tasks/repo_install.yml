@@ -25,8 +25,8 @@
   delay: 5
 
 # TODO(odyssey4me):
-# The following two tasks only applies to Pike->Queens upgrades,
-# so they can be removed in Rocky. See:
+# This task and the use of the register in the follow up tasks only applies
+# to Pike->Queens upgrades, so they can be removed in Rocky. See:
 # https://bugs.launchpad.net/openstack-ansible/+bug/1746935
 - name: List the current virtualenv_support folders in dist/site-packages
   find:
@@ -37,24 +37,6 @@
       - "/usr/local/lib/python2.7/site-packages"
   register: _virtualenv_support
 
-# TODO(odyssey4me):
-# We force a reinstall of the required pip packages when the
-# virtualenv_support folder is absent. This is to ensure that
-# we're able to create the venv properly for pypiserver.
-# The state ternary filter can be removed in Rocky as this is
-# only required for Pike->Queens upgrades.
-- name: Install required pip packages
-  pip:
-    name: "{{ repo_requires_pip_packages }}"
-    state: "{{ (_virtualenv_support['matched'] | int > 0) | ternary(repo_server_pip_package_state, 'forcereinstall') }}"
-    extra_args: >-
-      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
-      {{ pip_install_options | default('') }}
-  register: install_packages
-  until: install_packages | success
-  retries: 5
-  delay: 2
-
 # Note(odyssey4me):
 # To cater for a situation where the pip packages are changing, but the repo
 # does not yet have the package built, we need to ensure that this task can
@@ -62,6 +44,24 @@
 # using pypi.
 - name: Try installing from the repo first, then fall back to using pypi
   block:
+    # TODO(odyssey4me):
+    # We force a reinstall of the required pip packages when the
+    # virtualenv_support folder is absent. This is to ensure that
+    # we're able to create the venv properly for pypiserver.
+    # The state ternary filter can be removed in Rocky as this is
+    # only required for Pike->Queens upgrades.
+    - name: Install required pip packages (from repo)
+      pip:
+        name: "{{ repo_requires_pip_packages }}"
+        state: "{{ (_virtualenv_support['matched'] | int > 0) | ternary(repo_server_pip_package_state, 'forcereinstall') }}"
+        extra_args: >-
+          {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+          {{ pip_install_options | default('') }}
+      register: install_packages
+      until: install_packages | success
+      retries: 5
+      delay: 2
+
     - name: Install pip packages (from repo)
       pip:
         name: "{{ repo_pypiserver_pip_packages }}"
@@ -78,6 +78,20 @@
       notify:
         - reload pypiserver
   rescue:
+    - name: Install required pip packages (from pypi mirror)
+      pip:
+        name: "{{ repo_requires_pip_packages }}"
+        state: "{{ (_virtualenv_support['matched'] | int > 0) | ternary(repo_server_pip_package_state, 'forcereinstall') }}"
+        extra_args: >-
+          --index-url {{ repo_build_pip_default_index | default('https://pypi.python.org/simple') }}
+          --trusted-host {{ (repo_build_pip_default_index | default('https://pypi.python.org/simple')) | netloc_no_port }}
+          {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+          {{ pip_install_options | default('') }}
+      register: install_packages
+      until: install_packages | success
+      retries: 5
+      delay: 2
+
     - name: Install pip packages (from pypi mirror)
       pip:
         name: "{{ repo_pypiserver_pip_packages }}"
