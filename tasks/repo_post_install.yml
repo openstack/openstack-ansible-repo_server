@@ -30,7 +30,7 @@
 
 - name: Enable SSHD
   systemd:
-    name: sshd
+    name: "{{ repo_server_sshd }}"
     state: started
     enabled: yes
     masked: no
@@ -86,4 +86,3 @@
     config_type: "ini"
   notify:
     - reload pypiserver
-
