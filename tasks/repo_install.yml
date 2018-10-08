@@ -32,7 +32,7 @@
     gpgcheck: yes
     enabled: yes
     state: present
-    includepkgs: 'apt-cacher-ng lsyncd'
+    includepkgs: 'lsyncd'
   when:
     - ansible_pkg_mgr in ['yum', 'dnf']
   register: install_epel_repo

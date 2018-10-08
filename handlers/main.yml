@@ -35,17 +35,6 @@
   retries: 5
   delay: 2
 
-- name: reload acng
-  service:
-    name: "apt-cacher-ng"
-    enabled: yes
-    state: restarted
-    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
-  register: _restart
-  until: _restart is success
-  retries: 5
-  delay: 2
-
 - name: reload lsyncd
   service:
     name: "lsyncd"
@@ -89,4 +78,37 @@
   until: _restart is success
   retries: 5
   delay: 2
+
+# TODO(odyssey4me):
+# Remove these tasks in T. They are only present for the
+# Q->R upgrade or for R->S upgrades for environments which
+# were installed prior to R's release.
+- name: Remove apt-cacher-ng package
+  package:
+    name: apt-cacher-ng
+    state: absent
+    purge: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
+  listen:
+    - cleanup apt-cacher-ng service
+
+- name: Remove apt-cacher-ng data folders
+  file:
+    path: "{{ repo_service_home_folder }}/repo/{{ repo_pkg_cache_dirname | default('pkg-cache') }}"
+    state: absent
+  listen:
+    - cleanup apt-cacher-ng service
+
+- name: Remove apt-cacher-ng user
+  user:
+    name: "{{ repo_pkg_cache_owner | default('apt-cacher-ng') }}"
+    state: absent
+  listen:
+    - cleanup apt-cacher-ng service
+
+- name: Remove apt-cacher-ng group
+  group:
+    name: "{{ repo_pkg_cache_group | default('apt-cacher-ng') }}"
+    state: absent
+  listen:
+    - cleanup apt-cacher-ng service
 

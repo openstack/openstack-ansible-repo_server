@@ -22,8 +22,27 @@
     - { src: "lsyncd.defaults.j2", dest: "{{ repo_lsyncd_defaults_file }}" }
   notify:
     - reload lsyncd
+    - cleanup apt-cacher-ng service
   when:
-    - groups['repo_all']|length > 1
+    - groups['repo_all'] | length > 1
   tags:
     - repo-lsyncd
     - repo-config
+
+# TODO(odyssey4me):
+# Remove this task in T. It is only present for the
+# Q->R upgrade or for R->S upgrades for environments which
+# were installed prior to R's release.
+# It is implemented as a handler to prevent the service
+# being removed before lsync has restarted with the new
+# config. This task in particular cater for when lsync
+# is not used because there is only one repo container.
+- name: Remove apt-cacher-ng service
+  command: "true"
+  when:
+    - groups['repo_all'] | length == 1
+  notify:
+    - cleanup apt-cacher-ng service
+  tags:
+    - skip_ansible_lint
+

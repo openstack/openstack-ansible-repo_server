@@ -45,26 +45,9 @@ repo_server_port: 8181
 # Pypi Server port
 repo_pypiserver_port: 8280
 
-# Toggle the implementation of the Package Cache service
-repo_pkg_cache_enabled: true
-
-# Set the listening port for the Package Cache service
-repo_pkg_cache_port: 3142
-
-# Set the listening address for the Package Cache service
-repo_pkg_cache_bind: "0.0.0.0"
-
 # Set the git file paths
 repo_git_cache_dirname: openstackgit
 repo_git_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_git_cache_dirname }}"
-
-# Set the Package Cache Service files path
-repo_pkg_cache_dirname: pkg-cache
-repo_pkg_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_pkg_cache_dirname }}"
-
-# Set the Package Cache Service owner and group
-repo_pkg_cache_owner: apt-cacher-ng
-repo_pkg_cache_group: apt-cacher-ng
 
 # Set the log directory
 repo_service_log_dir: /var/log/apt-cacher-ng
@@ -94,4 +77,3 @@ repo_pypiserver_start_options: >-
 
 # config override var for systemd init file
 repo_pypiserver_init_overrides: {}
-

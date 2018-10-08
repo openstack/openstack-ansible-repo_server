@@ -36,10 +36,6 @@
   tags:
     - repo_server-config
 
-- include: repo_cacher.yml
-  static: no
-  when: repo_pkg_cache_enabled | bool
-
 - include: repo_key_populate.yml
   tags:
     - repo_server-config
