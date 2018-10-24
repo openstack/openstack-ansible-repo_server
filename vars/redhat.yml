@@ -28,6 +28,7 @@ repo_server_distro_packages:
   - nginx
   - openssh-server
   - rsync
+  - sudo
 
 repo_lsyncd_config_file: /etc/lsyncd.conf
 repo_lsyncd_defaults_file: /etc/sysconfig/lsyncd

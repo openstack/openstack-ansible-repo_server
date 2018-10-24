@@ -13,20 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This is so that the master repo server can perform pre and post rsync tasks
-# which may include stopping nginx on the slaves while data is syncing.
-- name: Allow nginx user to stop/start nginx via sudo
-  copy:
-    content: "nginx ALL=NOPASSWD: {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh\n"
-    dest: /etc/sudoers.d/nginx
-
-- name: Drop rsyncd configuration file(s)
-  copy:
-    src: "rsync.defaults"
-    dest: "/etc/default/rsync"
-  notify:
-    - reload rsyncd
-
 - name: create the system group
   group:
     name: "{{ repo_service_group_name }}"
