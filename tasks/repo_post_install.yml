@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Enable git automatic thread count detection
+  git_config:
+    scope: system
+    name: pack.threads
+    value: 0
+
 - name: Remove old key file(s) if found
   file:
     path: "{{ item }}"
