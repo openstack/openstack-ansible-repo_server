@@ -6,20 +6,6 @@ server {
     access_log /var/log/nginx/{{ repo_server_name }}.access.log gzip buffer=32k;
     error_log /var/log/nginx/{{ repo_server_name }}.error.log notice;
 
-    location /simple {
-        proxy_set_header  Host $host:$server_port;
-        proxy_set_header  X-Forwarded-Proto $scheme;
-        proxy_set_header  X-Real-IP $remote_addr;
-        proxy_pass http://pypiserver;
-    }
-
-    location /packages {
-        proxy_set_header  Host $host:$server_port;
-        proxy_set_header  X-Forwarded-Proto $scheme;
-        proxy_set_header  X-Real-IP $remote_addr;
-        proxy_pass http://pypiserver;
-    }
-
     location / {
         root {{ repo_service_home_folder }}/repo/;
         autoindex on;

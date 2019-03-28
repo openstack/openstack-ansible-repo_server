@@ -53,8 +53,6 @@
       dest: "/etc/rsyncd.conf"
     - src: "openstack-slushee.vhost.j2"
       dest: "/etc/nginx/sites-available/openstack-slushee.vhost"
-    - src: "nginx-pypi.conf.j2"
-      dest: "/etc/nginx/conf.d/pypi.conf"
   notify:
     - reload nginx
 
@@ -80,15 +78,3 @@
       dest: "{{ systemd_utils_prefix }}/system/git.socket"
   notify:
     - reload git socket
-
-- name: Place the pypiserver systemd init script
-  config_template:
-    src: "pypiserver-systemd-init.j2"
-    dest: "/etc/systemd/system/pypiserver.service"
-    mode: "0644"
-    owner: "root"
-    group: "root"
-    config_overrides: "{{ repo_pypiserver_init_overrides }}"
-    config_type: "ini"
-  notify:
-    - reload pypiserver

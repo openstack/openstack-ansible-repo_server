@@ -68,17 +68,6 @@
   retries: 5
   delay: 2
 
-- name: reload pypiserver
-  service:
-    name: "pypiserver"
-    enabled: yes
-    state: restarted
-    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
-  register: _restart
-  until: _restart is success
-  retries: 5
-  delay: 2
-
 # TODO(odyssey4me):
 # Remove these tasks in T. They are only present for the
 # Q->R upgrade or for R->S upgrades for environments which

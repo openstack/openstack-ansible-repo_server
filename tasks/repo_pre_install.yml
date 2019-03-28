@@ -49,10 +49,6 @@
     - path: "/var/lib/nginx"
     - path: "/var/log/nginx"
       mode: "0775"
-    - path: "/var/log/pypiserver"
-      mode: "0775"
-    - path: "{{ repo_pypiserver_working_dir }}"
-      mode: "0775"
 
 - name: Drop repo pre/post command script
   template:

@@ -42,38 +42,9 @@ repo_recreate_keys: False
 # Main web server port
 repo_server_port: 8181
 
-# Pypi Server port
-repo_pypiserver_port: 8280
-
 # Set the git file paths
 repo_git_cache_dirname: openstackgit
 repo_git_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_git_cache_dirname }}"
 
 # Set the log directory
 repo_service_log_dir: /var/log/apt-cacher-ng
-
-# Set the list of packages for the pypiserver
-repo_pypiserver_pip_packages:
- - "pypiserver[cache]==1.2.0"
-
-# Set the path to place all built python wheels
-# This is used by pypiserver to serve them
-repo_pypiserver_package_path: "{{ repo_service_home_folder }}/repo/pools"
-
-# Path to the pypiserver python virtualenv binaries
-repo_pypiserver_bin: "/openstack/venvs/pypiserver-1.2.0/bin"
-
-# Path to the pypiserver working directory
-repo_pypiserver_working_dir: "{{ repo_service_home_folder }}/pypiserver"
-
-# pypiserver service start options
-repo_pypiserver_start_options: >-
-  -i localhost
-  -p {{ repo_pypiserver_port }}
-  --log-file /var/log/pypiserver/pypiserver.log
-  --disable-fallback
-  {{ (debug | bool) | ternary('-vv', '-v') }}
-  {{ repo_pypiserver_package_path }}
-
-# config override var for systemd init file
-repo_pypiserver_init_overrides: {}
