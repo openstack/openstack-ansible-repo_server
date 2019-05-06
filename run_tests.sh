@@ -85,7 +85,7 @@ if [[ ! -d "${COMMON_TESTS_PATH}" ]]; then
     # repo in some way, so just clone it from upstream.
     else
         git clone -b "${TESTING_BRANCH}" \
-            https://git.openstack.org/openstack/openstack-ansible-tests \
+            https://opendev.org/openstack/openstack-ansible-tests \
             "${COMMON_TESTS_PATH}"
     fi
 fi
