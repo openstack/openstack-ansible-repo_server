@@ -13,6 +13,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Note(odyssey4me):
+# The Ansible systemd/service module does not allow 'state: absent',
+# so to maintain idempotence we use shell here instead of the module
+# to only stop/disable the service if it is present.
+- name: Stop and disable pypiserver service if it is present
+  shell: |
+    return_code=0
+    if [[ "$(systemctl is-active pypiserver)" == "active" ]]; then
+      systemctl stop pypiserver
+      return_code=2
+    fi
+    if [[ "$(systemctl is-enabled pypiserver)" == "enabled" ]]; then
+      systemctl disable pypiserver
+      return_code=2
+    fi
+    exit ${return_code}
+  args:
+    executable: /bin/bash
+  register: _remove_pypiserver_service
+  changed_when: _remove_pypiserver_service.rc == 2
+  failed_when: _remove_pypiserver_service.rc not in [0, 2]
+  # This task causes ansible-lint to give a ANSIBLE0014
+  # error, which does not make much sense given how the
+  # environment variable is used in this case.
+  # TODO(odyssey4me):
+  # Try to understand the issue ansible-lint is trying
+  # to highlight and address it.
+  tags:
+    - skip_ansible_lint
+  listen:
+    - "reload nginx"
+
+- name: Clean up legacy pypiserver files/folders
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/systemd/system/pypiserver.service"
+    - "/var/log/pypiserver"
+    - "/openstack/venvs/pypiserver-1.2.0"
+    - "/etc/nginx/conf.d/pypi.conf"
+    - "{{ repo_pypiserver_working_dir | default(repo_service_home_folder ~ '/pypiserver') }}"
+  listen:
+    - "reload nginx"
+
 - name: reload nginx
   service:
     name: "nginx"
