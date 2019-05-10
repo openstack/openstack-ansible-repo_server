@@ -28,6 +28,7 @@ repo_server_distro_packages:
   - nginx
   - openssh-server
   - rsync
+  - "{% if ansible_distribution_major_version|int > 7 %}rsync-daemon{% endif %}"
   - sudo
 
 repo_lsyncd_config_file: /etc/lsyncd.conf

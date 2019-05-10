@@ -55,7 +55,7 @@
 
 - name: Install distro packages
   package:
-    name: "{{ repo_server_distro_packages }}"
+    name: "{{ repo_server_distro_packages | reject('equalto', '') | list }}"
     state: "{{ repo_server_package_state }}"
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
