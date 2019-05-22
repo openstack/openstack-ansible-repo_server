@@ -6,10 +6,12 @@ case $CMD in
 pre-www)
   rm /etc/nginx/sites-enabled/openstack-slushee.vhost
   systemctl reload nginx
+  rm -f {{ repo_service_home_folder }}/repo/repo_sync_complete
   ;;
 post-www)
   ln -s /etc/nginx/sites-available/openstack-slushee.vhost /etc/nginx/sites-enabled/openstack-slushee.vhost
   systemctl reload nginx
+  touch {{ repo_service_home_folder }}/repo/repo_sync_complete
   ;;
 *)
   echo "Unknown command."
