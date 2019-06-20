@@ -21,7 +21,7 @@ Release notes for the project can be found at:
 `<https://docs.openstack.org/releasenotes/openstack-ansible-repo_server/>`_
 
 The project source code repository is located at:
-`<https://git.openstack.org/cgit/openstack/openstack-ansible-repo_server/>`_
+`<https://opendev.org/openstack/openstack-ansible-repo_server/>`_
 
 The project home is at:
 `<https://launchpad.net/openstack-ansible/>`_
