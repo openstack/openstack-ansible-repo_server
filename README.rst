@@ -27,4 +27,4 @@ The project home is at:
 `<https://launchpad.net/openstack-ansible/>`_
 
 The project bug tracker is located at:
-`<https://bugs.launchpad.net/openstack-ansible/>`
+`<https://bugs.launchpad.net/openstack-ansible/>`_
