@@ -27,6 +27,10 @@ cache_timeout: 600
 repo_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
 repo_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7') }}"
 
+## Centos NGINX repository options
+repo_centos_nginx_mirror: "{{ centos_nginx_mirror | default('http://nginx.org/packages/centos/7/$basearch/') }}"
+repo_centos_nginx_key: "{{ centos_nginx_key | default('http://nginx.org/keys/nginx_signing.key') }}"
+
 # Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 repo_server_package_state: "latest"
