@@ -44,8 +44,8 @@
   yum_repository:
     name: nginx
     description: 'nginx repo'
-    baseurl: "{{ repo_nginx_repo }}"
-    gpgkey: "{{ repo_nginx_gpg_key }}"
+    baseurl: "{{ repo_centos_nginx_mirror }}"
+    gpgkey: "{{ repo_centos_nginx_key }}"
   when:
     - ansible_pkg_mgr in ['yum', 'dnf']
   register: add_nginx_repo
