@@ -48,7 +48,7 @@
 
     - name: Clone repo for testing
       git:
-        repo: "https://git.openstack.org/openstack/openstack-ansible-repo_server"
+        repo: "https://opendev.org/openstack/openstack-ansible-repo_server"
         dest: /var/www/repo/openstackgit/repo_server
         version: master
 
