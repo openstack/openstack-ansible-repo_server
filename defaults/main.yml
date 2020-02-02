@@ -54,5 +54,9 @@ repo_server_port: 8181
 repo_git_cache_dirname: openstackgit
 repo_git_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_git_cache_dirname }}"
 
+# This directory is used by the repo_build, and will cause problems if synced
+# to repo_containers with other releases.
+repo_build_global_links_dirname: links
+
 # Set the log directory
 repo_service_log_dir: /var/log/apt-cacher-ng
