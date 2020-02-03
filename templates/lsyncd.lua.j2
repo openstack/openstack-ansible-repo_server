@@ -593,7 +593,7 @@ sync {
     rsync,
     source = "{{ repo_service_home_folder }}/repo",
     target = "{{ hostvars[node]['ansible_host'] }}:{{ repo_service_home_folder }}/repo",
-    exclude = {"{{ repo_git_cache_dir }}"},
+    exclude = {"{{ repo_git_cache_dirname }}"},
     rsync = {
         compress = true,
         acls = true,
