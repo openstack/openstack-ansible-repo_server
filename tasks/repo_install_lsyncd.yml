@@ -1,0 +1,59 @@
+---
+# Copyright 2020, VEXXHOST, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Install devel packages
+  package:
+    name: "{{ repo_server_build_packages }}"
+    state: installed
+    enablerepo: "{{ (ansible_os_family | lower == 'redhat' and ansible_distribution_major_version is version('8', '=')) | ternary('PowerTools', omit) }}"
+
+- name: Create temporary directory for build
+  tempfile:
+    state: directory
+  register: lsync_build
+
+- name: Clone lsyncd repository
+  git:
+    repo: "{{ repo_server_lsyncd_repo }}"
+    dest: "{{ lsync_build.path }}"
+    version: "{{ repo_server_lsyncd_version }}"
+    update: no
+
+- name: Install lsync
+  command: "{{ item }}"
+  args:
+    chdir: "{{ lsync_build.path }}"
+  changed_when: false
+  with_items:
+    - 'cmake .'
+    - 'make'
+    - 'make install'
+
+- name: Run the systemd service role
+  import_role:
+    name: systemd_service
+  vars:
+    systemd_slice_name: lsyncd
+    systemd_lock_path: /var/lock/lsync
+    systemd_services:
+      - service_name: lsyncd
+        state: started
+        enabled: yes
+        execstarts: /usr/local/bin/lsyncd -nodaemon /etc/lsyncd/lsyncd.conf.lua
+
+- name: Cleanup temporary build folder
+  file:
+    path: "{{ lsync_build.path }}"
+    state: absent
