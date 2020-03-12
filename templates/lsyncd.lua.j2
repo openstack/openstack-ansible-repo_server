@@ -1,9 +1,14 @@
-
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- default-rsync.lua
 --
 --    Syncs with rsync ("classic" Lsyncd)
 --    A (Layer 1) configuration.
+--
+-- Note:
+--    this is infact just a configuration using Layer 1 configuration
+--    like any other. It only gets compiled into the binary by default.
+--    You can simply use a modified one, by copying everything into a
+--    config file of yours and name it differently.
 --
 -- License: GPLv2 (see COPYING) or any later version
 -- Authors: Axel Kittenberger <axkibe@gmail.com>
@@ -16,10 +21,7 @@
 -- recursive sync.
 require ('os')
 
-if not default
-then
-	error( 'default not loaded' )
-end
+if not default then error( 'default not loaded' ) end
 
 local rsync = { }
 
@@ -98,29 +100,39 @@ prepost = function (config, prepost)
 end
 
 --
+-- Returns true for non Init and Blanket events.
+--
+local eventNotInitBlank =
+	function
+(
+	event
+)
+	return event.etype ~= 'Init' and event.etype ~= 'Blanket'
+end
+
+
+--
 -- Spawns rsync for a list of events
 --
--- Exlcusions are already handled by not having
+-- Exclusions are already handled by not having
 -- events for them.
 --
-rsync.action = function( inlet )
+rsync.action = function
+(
+	inlet
+)
 
-	--
 	-- gets all events ready for syncing
-	--
-	local elist = inlet.getEvents(
-		function(event)
-			return event.etype ~= 'Init' and event.etype ~= 'Blanket'
-		end
-	)
+	local elist = inlet.getEvents( eventNotInitBlank )
 
 	--
 	-- Replaces what rsync would consider filter rules by literals
 	--
-	local function sub( p )
-		if not p then
-			return
-		end
+	local function sub
+	(
+		p  -- pattern
+	)
+		if not p then return end
 
 		return p:
 			gsub( '%?', '\\?' ):
@@ -135,8 +147,14 @@ rsync.action = function( inlet )
 	-- Deletes create multi match patterns
 	--
 	local paths = elist.getPaths(
-		function( etype, path1, path2 )
-			if string.byte( path1, -1 ) == 47 and etype == 'Delete' then
+		function
+		(
+			etype,  -- event type
+			path1,  -- path
+			path2   -- path to for move events
+		)
+			if string.byte( path1, -1 ) == 47 and etype == 'Delete'
+			then
 				return sub( path1 )..'***', sub( path2 )
 			else
 				return sub( path1 ), sub( path2 )
@@ -144,52 +162,44 @@ rsync.action = function( inlet )
 		end
 	)
 
-	--
 	-- stores all filters by integer index
-	--
 	local filterI = { }
 
-	--
-	-- Stores all filters with path index
-	--
+	-- stores all filters with path index
 	local filterP = { }
 
-	--
-	-- Adds one path to the filter
-	--
-	local function addToFilter( path )
-
-		if filterP[ path ] then
-			return
-		end
+	-- adds one path to the filter
+	local function addToFilter
+	(
+		path
+	)
+		if filterP[ path ] then return end
 
 		filterP[ path ] = true
 
 		table.insert( filterI, path )
 	end
 
+	-- adds a path to the filter.
 	--
-	-- Adds a path to the filter.
-	--
-	-- Rsync needs to have entries for all steps in the path,
+	-- rsync needs to have entries for all steps in the path,
 	-- so the file for example d1/d2/d3/f1 needs following filters:
 	-- 'd1/', 'd1/d2/', 'd1/d2/d3/' and 'd1/d2/d3/f1'
-	--
-	for _, path in ipairs( paths ) do
-
-		if path and path ~= '' then
-
-			addToFilter(path)
+	for _, path in ipairs( paths )
+	do
+		if path and path ~= ''
+		then
+			addToFilter( path )
 
 			local pp = string.match( path, '^(.*/)[^/]+/?' )
 
-			while pp do
-				addToFilter(pp)
+			while pp
+			do
+				addToFilter( pp )
+
 				pp = string.match( pp, '^(.*/)[^/]+/?' )
 			end
-
 		end
-
 	end
 
 	local filterS = table.concat( filterI, '\n'   )
@@ -202,13 +212,15 @@ rsync.action = function( inlet )
 	)
 
 	local config = inlet.getConfig( )
+
 	local delete = nil
 
-	if config.delete == true or config.delete == 'running' then
+	if config.delete == true or config.delete == 'running'
+	then
 		delete = { '--delete', '--ignore-errors' }
 	end
 
-    prepost(config, 'precmd')
+	prepost(config, 'precmd')
 	spawn(
 		elist,
 		config.rsync.binary,
@@ -227,31 +239,42 @@ end
 
 
 --
--- Spawns the recursive startup sync
+-- Spawns the recursive startup sync.
 --
-rsync.init = function(event)
-
+rsync.init = function
+(
+	event
+)
 	local config   = event.config
+
 	local inlet    = event.inlet
+
 	local excludes = inlet.getExcludes( )
+
 	local delete   = nil
+
 	local target   = config.target
 
-	if not target then
-		if not config.host then
+	if not target
+	then
+		if not config.host
+		then
 			error('Internal fail, Neither target nor host is configured')
 		end
 
 		target = config.host .. ':' .. config.targetdir
 	end
 
-	if config.delete == true or config.delete == 'startup' then
+	if config.delete == true
+	or config.delete == 'startup'
+	then
 		delete = { '--delete', '--ignore-errors' }
 	end
 
-    prepost(config, 'precmd')
-	if #excludes == 0 then
-		-- start rsync without any excludes
+	prepost(config, 'precmd')
+	if #excludes == 0
+	then
+		-- starts rsync without any excludes
 		log(
 			'Normal',
 			'recursive startup rsync: ',
@@ -271,7 +294,8 @@ rsync.init = function(event)
 		)
 
 	else
-		-- start rsync providing an exclude list
+
+		-- starts rsync providing an exclusion list
 		-- on stdin
 		local exS = table.concat( excludes, '\n' )
 
@@ -303,12 +327,12 @@ end
 --
 -- Prepares and checks a syncs configuration on startup.
 --
-rsync.prepare =
-	function(
-		config,    -- the configuration
-		level,     -- additional error level for inherited use ( by rsyncssh )
-		skipTarget -- used by rsyncssh, do not check for target
-	)
+rsync.prepare = function
+(
+	config,    -- the configuration
+	level,     -- additional error level for inherited use ( by rsyncssh )
+	skipTarget -- used by rsyncssh, do not check for target
+)
 
 	-- First let default.prepare test the checkgauge
 	default.prepare( config, level + 6 )
@@ -410,9 +434,10 @@ rsync.prepare =
 		end
 	end
 
-
 	crsync._computed = { true }
+
 	local computed = crsync._computed
+
 	local computedN = 2
 
 	local shortFlags = {
@@ -533,11 +558,11 @@ rsync.prepare =
 	end
 
 	-- appends a / to target if not present
-	if not skipTarget and string.sub(config.target, -1) ~= '/'
+	if not skipTarget
+	and string.sub( config.target, -1 ) ~= '/'
 	then
 		config.target = config.target..'/'
 	end
-
 end
 
 ---
