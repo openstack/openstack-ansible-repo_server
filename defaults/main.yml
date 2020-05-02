@@ -50,10 +50,6 @@ repo_recreate_keys: False
 # Main web server port
 repo_server_port: 8181
 
-# Set the git file paths
-repo_git_cache_dirname: openstackgit
-repo_git_cache_dir: "{{ repo_service_home_folder }}/repo/{{ repo_git_cache_dirname }}"
-
 # This directory is used by the repo_build, and will cause problems if synced
 # to repo_containers with other releases.
 repo_build_global_links_dirname: links
