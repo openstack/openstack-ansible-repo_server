@@ -11,12 +11,6 @@ post-www)
   ln -s /etc/nginx/sites-available/openstack-slushee.vhost /etc/nginx/sites-enabled/openstack-slushee.vhost
   systemctl reload nginx
   ;;
-pre-git)
-  systemctl stop git.socket
-  ;;
-post-git)
-  systemctl start git.socket
-  ;;
 *)
   echo "Unknown command."
 esac

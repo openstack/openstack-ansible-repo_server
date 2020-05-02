@@ -618,25 +618,13 @@ sync {
     rsync,
     source = "{{ repo_service_home_folder }}/repo",
     target = "{{ hostvars[node]['ansible_host'] }}:{{ repo_service_home_folder }}/repo",
-    exclude = {"{{ repo_git_cache_dirname }}", "{{ repo_build_global_links_dirname }}"},
+    exclude = {{ repo_build_global_links_dirname }}",
     rsync = {
         compress = true,
         acls = true,
         rsh = "/usr/bin/ssh -l {{ repo_service_user_name }} -i {{ repo_service_home_folder }}/.ssh/id_rsa -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=5",
         precmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh pre-www",
         postcmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh post-www"
-    }
-}
-sync {
-    rsync,
-    source = "{{ repo_git_cache_dir }}",
-    target = "{{ hostvars[node]['ansible_host'] }}:{{ repo_git_cache_dir }}",
-    rsync = {
-        compress = true,
-        acls = true,
-        rsh = "/usr/bin/ssh -l {{ repo_service_user_name }} -i {{ repo_service_home_folder }}/.ssh/id_rsa -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=5",
-        precmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh pre-git",
-        postcmd = "sudo {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh post-git"
     }
 }
 {% endif %}
