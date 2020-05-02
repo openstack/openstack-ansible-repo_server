@@ -19,11 +19,9 @@ repo_nginx_repo: http://nginx.org/packages/centos/7/$basearch/
 repo_nginx_gpg_key: http://nginx.org/keys/nginx_signing.key
 repo_nginx_pid: /run/nginx.pid
 
-git_daemon_path: /usr/libexec/git-core/git-daemon
 rsyncd_service_name: rsyncd
 
 repo_server_distro_packages:
-  - git-daemon
   - lsyncd
   - nginx
   - openssh-server

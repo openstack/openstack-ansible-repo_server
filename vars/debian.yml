@@ -17,7 +17,6 @@ systemd_utils_prefix: "/lib/systemd"
 
 repo_nginx_pid: /var/run/nginx.pid
 
-git_daemon_path: /usr/lib/git-core/git-daemon
 rsyncd_service_name: rsync
 
 repo_server_distro_packages:
