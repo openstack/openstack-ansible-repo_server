@@ -49,6 +49,3 @@ repo_server_port: 8181
 # This directory is used by the repo_build, and will cause problems if synced
 # to repo_containers with other releases.
 repo_build_global_links_dirname: links
-
-# Set the log directory
-repo_service_log_dir: /var/log/apt-cacher-ng
