@@ -17,7 +17,7 @@
   git_config:
     scope: system
     name: pack.threads
-    value: 0
+    value: '0'
 
 - name: Remove old key file(s) if found
   file:
