@@ -22,6 +22,7 @@ repo_nginx_pid: /run/nginx.pid
 rsyncd_service_name: rsyncd
 
 repo_server_distro_packages:
+  - git
   - lsyncd
   - nginx
   - openssh-server
