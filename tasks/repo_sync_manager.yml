@@ -13,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Install lsyncd from source
+  include_tasks: repo_install_lsyncd.yml
+  when:
+    - ansible_os_family | lower == 'redhat'
+    - ansible_distribution_major_version is version('8', '=')
+  tags:
+    - build-lsyncd
+
 - name: Deploy lsyncd configuration file
   template:
     src: "{{ item.src }}"

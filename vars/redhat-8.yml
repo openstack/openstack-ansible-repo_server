@@ -13,19 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+repo_centos_epel_base: "{{ ansible_distribution_major_version ~ '/Everything/' ~ ansible_architecture }}"
+
 systemd_utils_prefix: "/lib/systemd"
 
 repo_nginx_pid: /run/nginx.pid
 
+git_daemon_path: /usr/libexec/git-core/git-daemon
 rsyncd_service_name: rsyncd
 
+repo_server_lsyncd_repo: https://github.com/axkibe/lsyncd
+repo_server_lsyncd_version: master
+
+# Installing this to build lsyncd from source
+repo_server_build_packages:
+  - automake
+  - cmake
+  - gcc
+  - gcc-c++
+  - lua-devel
+  - make
+
 repo_server_distro_packages:
-  - git
-  - lsyncd
+  - git-daemon
   - nginx
   - openssh-server
   - rsync
-  - "{% if ansible_distribution_major_version|int > 7 %}rsync-daemon{% endif %}"
+  - rsync-daemon
   - sudo
 
 repo_lsyncd_config_file: /etc/lsyncd.conf

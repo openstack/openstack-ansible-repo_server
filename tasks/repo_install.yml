@@ -27,8 +27,8 @@
 - name: Install the EPEL repository
   yum_repository:
     name: epel-repo_server
-    baseurl: "{{ repo_centos_epel_mirror ~ '/' ~ ansible_distribution_major_version ~ '/' ~ ansible_architecture }}"
-    description: 'Extra Packages for Enterprise Linux 7 - $basearch'
+    baseurl: "{{ repo_centos_epel_mirror ~ '/' ~ repo_centos_epel_base }}"
+    description: 'Extra Packages for Enterprise Linux'
     gpgcheck: yes
     enabled: yes
     state: present
