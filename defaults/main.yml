@@ -48,6 +48,7 @@ repo_service_group_name: www-data
 repo_recreate_keys: False
 
 # Main web server port
+repo_server_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 repo_server_port: 8181
 
 # This directory is used by the repo_build, and will cause problems if synced
