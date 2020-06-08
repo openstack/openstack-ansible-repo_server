@@ -49,12 +49,18 @@
   with_items:
     - src: "nginx.conf.j2"
       dest: "/etc/nginx/nginx.conf"
-    - src: "rsyncd.conf.j2"
-      dest: "/etc/rsyncd.conf"
     - src: "openstack-slushee.vhost.j2"
       dest: "/etc/nginx/sites-available/openstack-slushee.vhost"
   notify:
     - reload nginx
+
+- name: Drop rsyncd configuration file
+  template:
+    src: "rsyncd.conf.j2"
+    dest: "/etc/rsyncd.conf"
+  notify:
+    - reload rsyncd
+
 
 - name: Enable openstack-slushee site
   file:
