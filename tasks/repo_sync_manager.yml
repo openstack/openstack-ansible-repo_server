@@ -18,6 +18,7 @@
   when:
     - ansible_os_family | lower == 'redhat'
     - ansible_distribution_major_version is version('8', '=')
+    - groups['repo_all'] | length > 1
   tags:
     - build-lsyncd
 
