@@ -53,6 +53,7 @@
       dest: "/etc/nginx/sites-available/openstack-slushee.vhost"
   notify:
     - reload nginx
+    - reload lsyncd
 
 - name: Drop rsyncd configuration file
   template:

@@ -50,6 +50,15 @@
     - path: "/var/log/nginx"
       mode: "0775"
 
+- name: Sync file for master repo node
+  file:
+    path: "{{ repo_service_home_folder }}/repo/repo_sync_complete"
+    state: "touch"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+  when: inventory_hostname == groups['repo_all'][0]
+  changed_when: False
+
 - name: Drop repo pre/post command script
   template:
     src: repo_prepost_cmd.sh.j2

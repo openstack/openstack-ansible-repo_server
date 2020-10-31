@@ -45,3 +45,5 @@
   until: _restart is success
   retries: 5
   delay: 2
+  delegate_to: "{{ groups['repo_all'][0] }}"
+  run_once: true
