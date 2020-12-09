@@ -77,8 +77,6 @@
   with_items:
     - path: "/etc/lsyncd"
     - path: "/var/log/lsyncd"
-    - path: "/etc/nginx/sites-enabled/default"
-      state: "absent"
     - path: "/etc/nginx/conf.d"
     - path: "/etc/nginx/sites-available"
     - path: "/etc/nginx/sites-enabled"

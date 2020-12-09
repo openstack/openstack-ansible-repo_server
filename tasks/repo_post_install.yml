@@ -42,6 +42,15 @@
     masked: no
     daemon_reload: yes
 
+- name: Remove default nginx file
+  file:
+    path: "{{ item.path }}"
+    state: "{{ item.state | default('absent') }}"
+  with_items:
+    - path: "/etc/nginx/sites-enabled/default"
+  notify:
+    - reload nginx
+
 - name: Drop NGINX configuration files
   template:
     src: "{{ item.src }}"
