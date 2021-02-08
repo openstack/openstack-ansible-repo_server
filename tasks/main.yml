@@ -50,5 +50,9 @@
   tags:
     - repo_server-config
 
+- include: repo_install_constraints.yml
+  when: inventory_hostname == groups['repo_all'][0]
+  tags: repo_server-config
+
 - name: Flush handlers
   meta: flush_handlers

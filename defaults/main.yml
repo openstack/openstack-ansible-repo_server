@@ -54,3 +54,9 @@ repo_server_port: 8181
 # This directory is used by the repo_build, and will cause problems if synced
 # to repo_containers with other releases.
 repo_build_global_links_dirname: links
+
+# This directory is used on the deploy host to create u-c files which are then
+# copied to the repo server and served by http. Any other files in this
+# directory placed by the deployer will also be transferred
+repo_upper_constraints_path: "/etc/openstack_deploy/upper-constraints"
+
