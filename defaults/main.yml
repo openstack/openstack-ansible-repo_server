@@ -18,14 +18,14 @@ debug: False
 
 ## Cap the maximum number of threads / workers when a user value is unspecified.
 repo_nginx_threads_max: 16
-repo_nginx_threads: "{{ [[ansible_processor_vcpus|default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
+repo_nginx_threads: "{{ [[ansible_facts['processor_vcpus']|default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
 
 ## APT Cache Options
 cache_timeout: 600
 
 ## Centos EPEL repository options
 repo_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
-repo_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_distribution_major_version) }}"
+repo_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}"
 
 ## Centos NGINX repository options
 repo_centos_nginx_mirror: "{{ centos_nginx_mirror | default('http://nginx.org/packages/centos/$releasever/$basearch') }}"

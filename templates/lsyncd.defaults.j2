@@ -1,5 +1,5 @@
-{% if ansible_os_family == 'Debian' %}
+{% if ansible_facts['os_family'] == 'Debian' %}
 DAEMON_ARGS="$DAEMON_ARGS -insist"
-{% elif ansible_os_family == 'RedHat' %}
+{% elif ansible_facts['os_family'] == 'RedHat' %}
 LSYNCD_OPTIONS="{{ repo_lsyncd_config_file }}"
 {% endif %}
