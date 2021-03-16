@@ -20,15 +20,16 @@ galaxy_info:
   license: Apache2
   min_ansible_version: 2.2
   platforms:
+    - name: Debian
+      versions:
+        - buster
     - name: Ubuntu
       versions:
-        - xenial
+        - bionic
+        - focal
     - name: EL
       versions:
-        - 7
-    - name: opensuse
-      versions:
-        - 15
+        - 8
   categories:
     - cloud
     - python

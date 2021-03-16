@@ -18,7 +18,7 @@
     key: "{{ repo_centos_epel_key }}"
     state: present
   when:
-    - ansible_facts['pkg_mgr'] in ['yum', 'dnf']
+    - ansible_facts['pkg_mgr'] == 'dnf'
   register: _add_yum_keys
   until: _add_yum_keys is success
   retries: 5
@@ -34,7 +34,7 @@
     state: present
     includepkgs: 'lsyncd'
   when:
-    - ansible_facts['pkg_mgr'] in ['yum', 'dnf']
+    - ansible_facts['pkg_mgr'] == 'dnf'
   register: install_epel_repo
   until: install_epel_repo is success
   retries: 5
@@ -47,7 +47,7 @@
     baseurl: "{{ repo_centos_nginx_mirror }}"
     gpgkey: "{{ repo_centos_nginx_key }}"
   when:
-    - ansible_facts['pkg_mgr'] in ['yum', 'dnf']
+    - ansible_facts['pkg_mgr'] == 'dnf'
   register: add_nginx_repo
   until: add_nginx_repo is success
   retries: 5
