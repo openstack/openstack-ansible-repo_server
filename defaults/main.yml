@@ -43,10 +43,6 @@ repo_service_home_folder: /var/www
 repo_service_user_name: nginx
 repo_service_group_name: www-data
 
-# If you want to regenerate the repo users SSH keys, on each run, set this var to True
-# Otherwise keys will be generated on the first run and not regenerated each run.
-repo_recreate_keys: False
-
 # Main web server port
 repo_server_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 repo_server_port: 8181
@@ -60,3 +56,33 @@ repo_build_global_links_dirname: links
 # directory placed by the deployer will also be transferred
 repo_upper_constraints_path: "/etc/openstack_deploy/upper-constraints"
 
+# Delegated host for operating the ssh certificate authority
+repo_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host | default('localhost') }}"
+
+# directory on the setup host to create and store SSH keypairs
+repo_ssh_keypairs_dir: "{{ openstack_ssh_keypairs_dir | default('/etc/openstack_deploy/ssh_keypairs') }}"
+
+#Each repo host needs a signed ssh certificate to log into the others
+repo_ssh_keypairs:
+  - name: "repo-{{ inventory_hostname }}"
+    cert:
+      signed_by: "{{ openstack_ssh_signing_key }}"
+      principals: "{{ repo_ssh_key_principals | default('repo') }}"
+      valid_from: "{{ repo_ssh_key_valid_from | default('always') }}"
+      valid_to: "{{ repo_ssh_key_valid_to | default('forever') }}"
+
+#Each repo host needs the signed ssh certificate installing to the repo_server user
+repo_ssh_keypairs_install_keys:
+  owner: "{{ repo_service_user_name }}"
+  group: "{{ repo_service_group_name }}"
+  keys:
+    - cert: "repo-{{ inventory_hostname }}"
+      dest: "{{ repo_service_home_folder }}/.ssh/id_rsa"
+
+#Each repo host must trust the SSHD certificate authoritiy in the sshd configuration
+repo_ssh_keypairs_install_ca: "{{ openstack_ssh_keypairs_authorities }}"
+
+#Each repo host must allow SSH certificates with the appropriate principal to log into the repo_server user
+repo_ssh_keypairs_principals:
+  - user: "{{ repo_service_user_name }}"
+    principals: "{{ repo_ssh_key_principals | default(['repo']) }}"

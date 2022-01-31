@@ -36,14 +36,29 @@
   tags:
     - repo_server-config
 
-- include: repo_key_populate.yml
+- name: Create ssh keys for synchronising repo contents
+  include_role:
+    name: openstack.osa.ssh_keypairs
+  args:
+    apply:
+      tags:
+        - repo-key
+        - repo_server-config
+  vars:
+      ssh_keypairs_setup_hosst: "{{ repo_ssh_keypairs_setup_host }}"
+      ssh_keypairs_dir: "{{ repo_ssh_keypairs_dir }}"
+      ssh_keypairs: "{{ repo_ssh_keypairs }}"
+      ssh_keypairs_install_keys: "{{ repo_ssh_keypairs_install_keys }}"
+      ssh_keypairs_install_ca: "{{ repo_ssh_keypairs_install_ca }}"
+      ssh_keypairs_principals: "{{ repo_ssh_keypairs_principals }}"
   tags:
-    - repo_server-config
+    - always
 
-- include: repo_key_distribute.yml
-  when: groups.repo_all|length > 1
-  tags:
-    - repo_server-config
+# TODO (jrosser) Remove this task for the Z release
+- name: Remove legacy authorized keys file
+  file:
+    path: "{{ repo_service_home_folder }}/.ssh/authorized_keys"
+    state: absent
 
 - include: repo_sync_manager.yml
   when: inventory_hostname == groups['repo_all'][0]
