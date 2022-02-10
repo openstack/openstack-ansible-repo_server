@@ -609,7 +609,8 @@ rsync.delay = 15
 settings {
     logfile = "/var/log/lsyncd/lsyncd.log",
     statusFile = "/var/log/lsyncd/lsyncd-status.log",
-    statusInterval = 20
+    statusInterval = 20,
+    insist = true
 }
 
 {% for node in groups['repo_all'] %}
