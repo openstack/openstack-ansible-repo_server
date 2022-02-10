@@ -18,12 +18,13 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { src: "lsyncd.lua.j2", dest: "{{ repo_lsyncd_config_file }}" }
-    - { src: "lsyncd.defaults.j2", dest: "{{ repo_lsyncd_defaults_file }}" }
+    - { src: "lsyncd.lua.j2", dest: "{{ repo_lsyncd_config_file }}", condition: true }
+    - { src: "lsyncd.defaults.j2", dest: "{{ repo_lsyncd_defaults_file }}", condition: "{{ ansible_facts['pkg_mgr'] == 'dnf' }}" }
   notify:
     - reload lsyncd
   when:
     - groups['repo_all'] | length > 1
+    - item.condition | bool
   tags:
     - repo-lsyncd
     - repo-config
