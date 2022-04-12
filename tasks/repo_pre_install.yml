@@ -117,23 +117,6 @@
     - path: "/var/log/nginx"
       mode: "0775"
 
-- name: Sync file for master repo node
-  file:
-    path: "{{ repo_service_home_folder }}/repo/repo_sync_complete"
-    state: "touch"
-    owner: "{{ repo_service_user_name }}"
-    group: "{{ repo_service_group_name }}"
-  when: inventory_hostname == groups['repo_all'][0]
-  changed_when: False
-
-- name: Drop repo pre/post command script
-  template:
-    src: repo_prepost_cmd.sh.j2
-    dest: "{{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh"
-    mode: "0750"
-    owner: "root"
-    group: "root"
-
 - name: File and directory setup (root user)
   file:
     path: "{{ item.path }}"
@@ -142,8 +125,6 @@
     group: "root"
     mode: "0755"
   with_items:
-    - path: "/etc/lsyncd"
-    - path: "/var/log/lsyncd"
     - path: "/etc/nginx/conf.d"
     - path: "/etc/nginx/sites-available"
     - path: "/etc/nginx/sites-enabled"

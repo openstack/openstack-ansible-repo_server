@@ -17,17 +17,10 @@ systemd_utils_prefix: "/lib/systemd"
 
 repo_nginx_pid: /run/nginx.pid
 
+# NOTE(jrosser) remove this once rsync cleanup tasks are no longer required
 rsyncd_service_name: rsync
 
 repo_server_distro_packages:
   - git
-  - lsyncd
   - nginx-extras
-  - openssh-server
-  - rsync
   - sudo
-
-repo_lsyncd_config_file: /etc/lsyncd/lsyncd.conf.lua
-repo_lsyncd_defaults_file: /etc/default/lsyncd
-
-repo_server_sshd: ssh

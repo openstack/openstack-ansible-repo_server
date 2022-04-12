@@ -19,14 +19,6 @@
     name: pack.threads
     value: '0'
 
-- name: Enable SSHD
-  systemd:
-    name: "{{ repo_server_sshd }}"
-    state: started
-    enabled: yes
-    masked: no
-    daemon_reload: yes
-
 - name: Remove default nginx file
   file:
     path: "{{ item.path }}"
@@ -47,15 +39,6 @@
       dest: "/etc/nginx/sites-available/openstack-slushee.vhost"
   notify:
     - reload nginx
-    - reload lsyncd
-
-- name: Drop rsyncd configuration file
-  template:
-    src: "rsyncd.conf.j2"
-    dest: "/etc/rsyncd.conf"
-  notify:
-    - reload rsyncd
-
 
 - name: Enable openstack-slushee site
   file:

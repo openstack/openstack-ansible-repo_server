@@ -23,10 +23,6 @@ repo_nginx_threads: "{{ [[ansible_facts['processor_vcpus']|default(2) // 2, 1] |
 ## APT Cache Options
 cache_timeout: 600
 
-## Centos EPEL repository options
-repo_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
-repo_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}"
-
 ## Centos NGINX repository options
 repo_centos_nginx_mirror: "{{ centos_nginx_mirror | default('http://nginx.org/packages/centos/$releasever/$basearch') }}"
 repo_centos_nginx_key: "{{ centos_nginx_key | default('http://nginx.org/keys/nginx_signing.key') }}"
@@ -55,43 +51,6 @@ repo_build_global_links_dirname: links
 # copied to the repo server and served by http. Any other files in this
 # directory placed by the deployer will also be transferred
 repo_upper_constraints_path: "/etc/openstack_deploy/upper-constraints"
-
-# Delegated host for operating the ssh certificate authority
-repo_ssh_keypairs_setup_host: "{{ openstack_ssh_keypairs_setup_host | default('localhost') }}"
-
-# directory on the setup host to create and store SSH keypairs
-repo_ssh_keypairs_dir: "{{ openstack_ssh_keypairs_dir | default('/etc/openstack_deploy/ssh_keypairs') }}"
-
-#Each repo host needs a signed ssh certificate to log into the others
-repo_ssh_keypairs:
-  - name: "repo-{{ inventory_hostname }}"
-    cert:
-      signed_by: "{{ openstack_ssh_signing_key }}"
-      principals: "{{ repo_ssh_key_principals | default('repo') }}"
-      valid_from: "{{ repo_ssh_key_valid_from | default('always') }}"
-      valid_to: "{{ repo_ssh_key_valid_to | default('forever') }}"
-
-#Each repo host needs the signed ssh certificate installing to the repo_server user
-repo_ssh_keypairs_install_keys:
-  owner: "{{ repo_service_user_name }}"
-  group: "{{ repo_service_group_name }}"
-  keys:
-    - cert: "repo-{{ inventory_hostname }}"
-      dest: "{{ repo_service_home_folder }}/.ssh/id_rsa"
-
-#Each repo host must trust the SSHD certificate authoritiy in the sshd configuration
-repo_ssh_keypairs_install_ca: "{{ openstack_ssh_keypairs_authorities }}"
-
-#Each repo host must allow SSH certificates with the appropriate principal to log into the repo_server user
-repo_ssh_keypairs_principals:
-  - user: "{{ repo_service_user_name }}"
-    principals: "{{ repo_ssh_key_principals | default(['repo']) }}"
-
-# Temporary variable which allows the lsyncd/rsync installation to be disabled outside this
-# role when transtioning to using a shared filesystem to sync contents between repo_servers.
-# The default is to enable the sync manager to give backward compatibility and allow code to
-# merge.
-repo_server_enable_sync_manager: True
 
 # Multiple repo servers must have a shared /var/www/repo
 repo_server_systemd_mounts: []
