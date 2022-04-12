@@ -29,6 +29,13 @@
     createhome: "yes"
     home: "{{ repo_service_home_folder }}"
 
+- name: Mount any remote volumes
+  include_role:
+    name: systemd_mount
+  vars:
+    systemd_mounts: "{{ repo_server_systemd_mounts }}"
+  when: repo_server_systemd_mounts | length > 0
+
 - name: File and directory setup (non-root user)
   file:
     path: "{{ item.path }}"

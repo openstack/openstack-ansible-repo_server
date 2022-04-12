@@ -86,3 +86,21 @@ repo_ssh_keypairs_install_ca: "{{ openstack_ssh_keypairs_authorities }}"
 repo_ssh_keypairs_principals:
   - user: "{{ repo_service_user_name }}"
     principals: "{{ repo_ssh_key_principals | default(['repo']) }}"
+
+# Temporary variable which allows the lsyncd/rsync installation to be disabled outside this
+# role when transtioning to using a shared filesystem to sync contents between repo_servers.
+# The default is to enable the sync manager to give backward compatibility and allow code to
+# merge.
+repo_server_enable_sync_manager: True
+
+# Multiple repo servers must have a shared /var/www/repo
+repo_server_systemd_mounts: []
+
+# Example using remote shared filesystem to synchronise the repo contents between
+# several repo servers
+#repo_server_systemd_mounts:
+#  - what: "gluster-server:gluster-volume-name"
+#    where: "/var/www/repo"
+#    type: glusterfs
+#    state: 'started'
+#    enabled: true

@@ -66,7 +66,9 @@
     state: absent
 
 - include: repo_sync_manager.yml
-  when: inventory_hostname == groups['repo_all'][0]
+  when:
+    - repo_server_enable_sync_manager
+    - inventory_hostname == groups['repo_all'][0]
   tags:
     - repo_server-config
 
