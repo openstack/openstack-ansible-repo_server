@@ -50,3 +50,12 @@
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
     mode: 0644
+
+- name: Create a symlink for constraints file
+  file:
+    src: "{{ repo_service_home_folder }}/repo/constraints/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
+    dest: "{{ repo_service_home_folder }}/repo/constraints/upper_constraints_cached.txt"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+    state: link
+    mode: 0644
