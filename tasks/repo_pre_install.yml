@@ -86,6 +86,7 @@
   when:
     - _repo_folder_stat.stat.exists
     - _repo_folder_mountpoint.rc != 0
+    - ('repo_all' in group_names and inventory_hostname == (groups['repo_all'] | intersect(ansible_play_hosts)) | first) | bool
 
 # NOTE(jrosser) remove this task in release after Z
 - name: Fix permissions on restored repo content
@@ -94,6 +95,8 @@
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
     recurse: yes
+  when:
+    - ('repo_all' in group_names and inventory_hostname == (groups['repo_all'] | intersect(ansible_play_hosts)) | first) | bool
 
 - name: File and directory setup (non-root user)
   file:
