@@ -29,6 +29,11 @@
   tags:
     - always
 
+# TODO (jrosser) Remove this task for the Z release
+- include: repo_sync_cleanup.yml
+  tags:
+    - repo_server-install
+
 - include: repo_pre_install.yml
   tags:
     - repo_server-install
