@@ -31,11 +31,6 @@
         url: "http://localhost:8181"
         status_code: 200
 
-    - name: Check lsync is running
-      shell: "ps auxf | grep lsync"
-      tags:
-        - skip_ansible_lint
-
     - name: Check repo directory exists
       stat:
         path: /var/www/repo

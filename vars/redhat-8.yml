@@ -13,24 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-repo_centos_epel_base: "{{ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
-
 systemd_utils_prefix: "/lib/systemd"
 
 repo_nginx_pid: /run/nginx.pid
 
+# NOTE(jrosser) remove this when rsyncd cleanup task are no longer required
 rsyncd_service_name: rsyncd
 
 repo_server_distro_packages:
   - git
-  - lsyncd
   - nginx
-  - openssh-server
-  - rsync
-  - rsync-daemon
   - sudo
-
-repo_lsyncd_config_file: /etc/lsyncd/lsyncd.conf.lua
-repo_lsyncd_defaults_file: /etc/sysconfig/lsyncd
-
-repo_server_sshd: sshd

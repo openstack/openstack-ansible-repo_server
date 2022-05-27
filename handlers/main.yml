@@ -23,27 +23,3 @@
   until: _restart is success
   retries: 5
   delay: 2
-
-- name: reload rsyncd
-  service:
-    name: "{{ rsyncd_service_name }}"
-    enabled: yes
-    state: restarted
-    daemon_reload: "{{ (ansible_facts['service_mgr'] == 'systemd') | ternary('yes', omit) }}"
-  register: _restart
-  until: _restart is success
-  retries: 5
-  delay: 2
-
-- name: reload lsyncd
-  service:
-    name: "lsyncd"
-    enabled: yes
-    state: restarted
-    daemon_reload: "{{ (ansible_facts['service_mgr'] == 'systemd') | ternary('yes', omit) }}"
-  register: _restart
-  until: _restart is success
-  retries: 5
-  delay: 2
-  delegate_to: "{{ groups['repo_all'][0] }}"
-  run_once: true

@@ -13,33 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Install EPEL gpg keys
-  rpm_key:
-    key: "{{ repo_centos_epel_key }}"
-    state: present
-  when:
-    - ansible_facts['pkg_mgr'] == 'dnf'
-  register: _add_yum_keys
-  until: _add_yum_keys is success
-  retries: 5
-  delay: 2
-
-- name: Install the EPEL repository
-  yum_repository:
-    name: epel-repo_server
-    baseurl: "{{ repo_centos_epel_mirror ~ '/' ~ repo_centos_epel_base }}"
-    description: 'Extra Packages for Enterprise Linux'
-    gpgcheck: yes
-    enabled: yes
-    state: present
-    includepkgs: 'lsyncd'
-  when:
-    - ansible_facts['pkg_mgr'] == 'dnf'
-  register: install_epel_repo
-  until: install_epel_repo is success
-  retries: 5
-  delay: 2
-
 - name: Add NGINX repository
   yum_repository:
     name: nginx
@@ -63,17 +36,3 @@
   until: install_packages is success
   retries: 5
   delay: 5
-
-# This is so that the master repo server can perform pre and post rsync tasks
-# which may include stopping nginx on the slaves while data is syncing.
-- name: Allow nginx user to stop/start nginx via sudo
-  copy:
-    content: "nginx ALL=NOPASSWD: {{ repo_service_home_folder }}/repo/repo_prepost_cmd.sh\n"
-    dest: /etc/sudoers.d/nginx
-
-- name: Drop rsyncd configuration file(s)
-  copy:
-    src: "rsync.defaults"
-    dest: "/etc/default/rsync"
-  notify:
-    - reload rsyncd
