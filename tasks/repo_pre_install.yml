@@ -68,6 +68,8 @@
   when:
     - _repo_folder_stat.stat.exists
     - _repo_folder_mountpoint.rc != 0
+  notify:
+    - reload nginx
 
 - name: Mount any remote volumes
   include_role:
