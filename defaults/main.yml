@@ -23,10 +23,6 @@ repo_nginx_threads: "{{ [[ansible_facts['processor_vcpus']|default(2) // 2, 1] |
 ## APT Cache Options
 cache_timeout: 600
 
-## Centos NGINX repository options
-repo_centos_nginx_mirror: "{{ centos_nginx_mirror | default('http://nginx.org/packages/centos/$releasever/$basearch') }}"
-repo_centos_nginx_key: "{{ centos_nginx_key | default('http://nginx.org/keys/nginx_signing.key') }}"
-
 # Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 repo_server_package_state: "latest"
