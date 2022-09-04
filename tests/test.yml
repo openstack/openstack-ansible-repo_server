@@ -14,10 +14,10 @@
 # limitations under the License.
 
 # Prepare the host
-- include: common/test-setup-host.yml
+- ansible.builtin.include_tasks: common/test-setup-host.yml
 
 # Install repo server
-- include: test-install-repo-server.yml
+- ansible.builtin.include_tasks: test-install-repo-server.yml
 
 # Test repo server
-- include: test-repo-server-functional.yml
+- ansible.builtin.include_tasks: test-repo-server-functional.yml

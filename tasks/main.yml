@@ -30,19 +30,19 @@
     - always
 
 # TODO (jrosser) Remove this task for the Z release
-- include: repo_sync_cleanup.yml
+- ansible.builtin.include_tasks: repo_sync_cleanup.yml
   tags:
     - repo_server-install
 
-- include: repo_pre_install.yml
+- ansible.builtin.include_tasks: repo_pre_install.yml
   tags:
     - repo_server-install
 
-- include: repo_install.yml
+- ansible.builtin.include_tasks: repo_install.yml
   tags:
     - repo_server-install
 
-- include: repo_post_install.yml
+- ansible.builtin.include_tasks: repo_post_install.yml
   tags:
     - repo_server-config
 
@@ -52,7 +52,7 @@
     path: "{{ repo_service_home_folder }}/.ssh/authorized_keys"
     state: absent
 
-- include: repo_install_constraints.yml
+- ansible.builtin.include_tasks: repo_install_constraints.yml
   when: inventory_hostname == groups['repo_all'][0]
   tags: repo_server-config
 
