@@ -59,3 +59,60 @@ repo_server_systemd_mounts: []
 #    type: glusterfs
 #    state: 'started'
 #    enabled: true
+
+###
+### Backend TLS
+###
+
+# Define if communication between haproxy and service backends should be
+# encrypted with TLS.
+repo_backend_ssl: "{{ openstack_service_backend_ssl | default(False) }}"
+
+# Storage location for SSL certificate authority
+repo_pki_dir: "{{ openstack_pki_dir | default('/etc/openstack_deploy/pki') }}"
+
+# Delegated host for operating the certificate authority
+repo_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
+
+# repo server certificate
+repo_pki_keys_path: "{{ repo_pki_dir ~ '/certs/private/' }}"
+repo_pki_certs_path: "{{ repo_pki_dir ~ '/certs/certs/' }}"
+repo_pki_intermediate_cert_name: "{{ openstack_pki_service_intermediate_cert_name | default('ExampleCorpIntermediate') }}"
+repo_pki_intermediate_cert_path: "{{ repo_pki_dir ~ '/roots/' ~ repo_pki_intermediate_cert_name ~ '/certs/' ~ repo_pki_intermediate_cert_name ~ '.crt' }}"
+repo_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
+repo_pki_regen_cert: ''
+repo_pki_certificates:
+  - name: "repo_{{ ansible_facts['hostname'] }}"
+    provider: ownca
+    cn: "{{ ansible_facts['hostname'] }}"
+    san: "{{ repo_pki_san }}"
+    signed_by: "{{ repo_pki_intermediate_cert_name }}"
+
+# repo destination files for SSL certificates
+repo_ssl_cert: /etc/ssl/certs/repo.pem
+repo_ssl_key: /etc/ssl/private/repo.key
+repo_ssl_ca_cert: /etc/ssl/certs/repo-ca.pem
+
+# Installation details for SSL certificates
+repo_pki_install_certificates:
+  - src: "{{ repo_user_ssl_cert | default(repo_pki_certs_path ~ 'repo_' ~ ansible_facts['hostname'] ~ '-chain.crt') }}"
+    dest: "{{ repo_ssl_cert }}"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+    mode: "0644"
+  - src: "{{ repo_user_ssl_key | default(repo_pki_keys_path ~ 'repo_' ~ ansible_facts['hostname'] ~ '.key.pem') }}"
+    dest: "{{ repo_ssl_key }}"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+    mode: "0600"
+  - src: "{{ repo_user_ssl_ca_cert | default(repo_pki_intermediate_cert_path) }}"
+    dest: "{{ repo_ssl_ca_cert }}"
+    owner: "{{ repo_service_user_name }}"
+    group: "{{ repo_service_group_name }}"
+    mode: "0644"
+    condition: "{{ repo_user_ssl_ca_cert is defined }}"
+
+# Define user-provided SSL certificates
+#repo_user_ssl_cert: <path to cert on ansible deployment host>
+#repo_user_ssl_key: <path to cert on ansible deployment host>
+#repo_user_ssl_ca_cert: <path to cert on ansible deployment host>

@@ -2,6 +2,15 @@ server {
     listen {{ repo_server_bind_address }}:{{ repo_server_port }};
     server_name {{ repo_server_name }};
 
+    {% if repo_backend_ssl | bool -%}
+    ssl on;
+    ssl_certificate {{ repo_ssl_cert }};
+    ssl_certificate_key {{ repo_ssl_key }};
+    {% if repo_user_ssl_ca_cert is defined -%}
+    ssl_trusted_certificate {{ repo_ssl_ca_cert }};
+    {% endif -%}
+    {% endif -%}
+
     # Logging
     access_log /var/log/nginx/{{ repo_server_name }}.access.log gzip buffer=32k;
     error_log /var/log/nginx/{{ repo_server_name }}.error.log notice;

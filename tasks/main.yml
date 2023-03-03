@@ -42,6 +42,26 @@
   tags:
     - repo_server-install
 
+- name: Create and install SSL certificates
+  include_role:
+    name: pki
+    tasks_from: main_certs.yml
+    apply:
+      tags:
+        - repo_server-config
+        - pki
+  vars:
+    pki_setup_host: "{{ repo_pki_setup_host }}"
+    pki_dir: "{{ repo_pki_dir }}"
+    pki_create_certificates: "{{ repo_user_ssl_cert is not defined and repo_user_ssl_key is not defined }}"
+    pki_regen_cert: "{{ repo_pki_regen_cert }}"
+    pki_certificates: "{{ repo_pki_certificates }}"
+    pki_install_certificates: "{{ repo_pki_install_certificates }}"
+  when:
+    - repo_backend_ssl
+  tags:
+    - always
+
 - ansible.builtin.include_tasks: repo_post_install.yml
   tags:
     - repo_server-config
