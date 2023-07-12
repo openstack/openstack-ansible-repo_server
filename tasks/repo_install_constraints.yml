@@ -17,6 +17,7 @@
   file:
     state: directory
     path: "{{ repo_upper_constraints_path }}"
+    mode: "0755"
   delegate_to: localhost
 
 # by default the u-c file is retrieved by https
@@ -24,12 +25,13 @@
   get_url:
     url: "{{ user_requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
     dest: "{{ repo_upper_constraints_path }}/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
+    mode: "0644"
   when: requirements_git_repo is search('http')
   delegate_to: localhost
 
 - name: Retrieve local filesystem upper constraints in CI
   command:
-     git --git-dir={{ requirements_git_repo.split('file://')[1] }}/.git show {{ requirements_git_install_branch | default('master') }}:upper-constraints.txt
+    git --git-dir={{ requirements_git_repo.split('file://')[1] }}/.git show {{ requirements_git_install_branch | default('master') }}:upper-constraints.txt
   when: requirements_git_repo is search('file://')
   register: _uc_contents_git
   delegate_to: localhost
@@ -40,6 +42,7 @@
   copy:
     content: "{{ _uc_contents_git.stdout }}"
     dest: "{{ repo_upper_constraints_path }}/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
+    mode: "0644"
   when: requirements_git_repo is search('file://')
   delegate_to: localhost
 
@@ -49,7 +52,7 @@
     dest: "{{ repo_service_home_folder }}/repo/constraints/"
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
-    mode: 0644
+    mode: "0644"
 
 - name: Create a symlink for constraints file
   file:
@@ -58,4 +61,4 @@
     owner: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
     state: link
-    mode: 0644
+    mode: "0644"

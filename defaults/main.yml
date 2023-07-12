@@ -18,7 +18,7 @@ debug: False
 
 ## Cap the maximum number of threads / workers when a user value is unspecified.
 repo_nginx_threads_max: 16
-repo_nginx_threads: "{{ [[ansible_facts['processor_vcpus']|default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
+repo_nginx_threads: "{{ [[ansible_facts['processor_vcpus'] | default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
 
 ## APT Cache Options
 cache_timeout: 600
@@ -53,12 +53,12 @@ repo_server_systemd_mounts: []
 
 # Example using remote shared filesystem to synchronise the repo contents between
 # several repo servers
-#repo_server_systemd_mounts:
-#  - what: "gluster-server:gluster-volume-name"
-#    where: "/var/www/repo"
-#    type: glusterfs
-#    state: 'started'
-#    enabled: true
+# repo_server_systemd_mounts:
+#   - what: "gluster-server:gluster-volume-name"
+#     where: "/var/www/repo"
+#     type: glusterfs
+#     state: 'started'
+#     enabled: true
 
 ###
 ### Backend TLS
@@ -113,6 +113,6 @@ repo_pki_install_certificates:
     condition: "{{ repo_user_ssl_ca_cert is defined }}"
 
 # Define user-provided SSL certificates
-#repo_user_ssl_cert: <path to cert on ansible deployment host>
-#repo_user_ssl_key: <path to cert on ansible deployment host>
-#repo_user_ssl_ca_cert: <path to cert on ansible deployment host>
+# repo_user_ssl_cert: <path to cert on ansible deployment host>
+# repo_user_ssl_key: <path to cert on ansible deployment host>
+# repo_user_ssl_ca_cert: <path to cert on ansible deployment host>

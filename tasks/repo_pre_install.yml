@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: create the system group
+- name: Create the system group
   group:
     name: "{{ repo_service_group_name }}"
     state: "present"
@@ -30,13 +30,13 @@
     home: "{{ repo_service_home_folder }}"
 
 # NOTE(jrosser) remove this task in release after Z
-- name: Test if {{ repo_service_home_folder }}/repo exists
+- name: Test if {{ repo_service_home_folder }}/repo exists # noqa: name[template]
   stat:
     path: "{{ repo_service_home_folder }}/repo"
   register: _repo_folder_stat
 
 # NOTE(jrosser) remove this task in release after Z
-- name: Test if {{ repo_service_home_folder }} is a mountpoint
+- name: Test if a path is a mountpoint {{ repo_service_home_folder }}
   command: mountpoint -q {{ repo_service_home_folder }}/repo
   register: _repo_folder_mountpoint
   failed_when: False
@@ -62,14 +62,15 @@
     - skip_ansible_lint
 
 # NOTE(jrosser) remove this task in release after Z
-- file:
+- name: Remove folder dir during migration from lsyncd
+  file:
     path: "{{ repo_service_home_folder }}/repo"
     state: absent
   when:
     - _repo_folder_stat.stat.exists
     - _repo_folder_mountpoint.rc != 0
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Mount any remote volumes
   include_role:
@@ -79,7 +80,7 @@
   when: repo_server_systemd_mounts | length > 0
 
 # NOTE(jrosser) ensure there is no race condition between mounting and using the filesystem
-- name: Wait until {{ repo_service_home_folder }} is a mounted
+- name: Wait until mount will finish for {{ repo_service_home_folder }}
   command: mountpoint -q {{ repo_service_home_folder }}/repo
   changed_when: false
   register: _repo_folder_is_mounted

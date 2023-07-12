@@ -23,8 +23,7 @@
 
 - name: Clean yum metadata when nginx repo is removed
   command: dnf clean metadata
-  args:
-    warn: no
+  changed_when: false
   when:
     - ansible_facts['pkg_mgr'] == 'dnf'
     - _repo_removed is changed

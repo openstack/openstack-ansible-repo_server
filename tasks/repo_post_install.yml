@@ -23,22 +23,24 @@
   file:
     path: "{{ item.path }}"
     state: "{{ item.state | default('absent') }}"
+    mode: "0644"
   with_items:
     - path: "/etc/nginx/sites-enabled/default"
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Drop NGINX configuration files
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
+    mode: "0644"
   with_items:
     - src: "nginx.conf.j2"
       dest: "/etc/nginx/nginx.conf"
     - src: "openstack-slushee.vhost.j2"
       dest: "/etc/nginx/sites-available/openstack-slushee.vhost"
   notify:
-    - reload nginx
+    - Reload nginx
 
 - name: Enable openstack-slushee site
   file:
@@ -46,4 +48,4 @@
     dest: "/etc/nginx/sites-enabled/openstack-slushee.vhost"
     state: "link"
   notify:
-    - reload nginx
+    - Reload nginx
