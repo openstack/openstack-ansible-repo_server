@@ -87,6 +87,7 @@
   retries: 5
   delay: 2
   until: _repo_folder_is_mounted.rc == 0
+  when: repo_server_systemd_mounts | length > 0
 
 # NOTE(jrosser) remove this task in release after Z
 - name: Restore repo content from archive into new shared filesystem
