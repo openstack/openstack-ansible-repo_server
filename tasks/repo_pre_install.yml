@@ -29,49 +29,6 @@
     createhome: "yes"
     home: "{{ repo_service_home_folder }}"
 
-# NOTE(jrosser) remove this task in release after Z
-- name: Test if {{ repo_service_home_folder }}/repo exists # noqa: name[template]
-  stat:
-    path: "{{ repo_service_home_folder }}/repo"
-  register: _repo_folder_stat
-
-# NOTE(jrosser) remove this task in release after Z
-- name: Test if a path is a mountpoint {{ repo_service_home_folder }}
-  command: mountpoint -q {{ repo_service_home_folder }}/repo
-  register: _repo_folder_mountpoint
-  failed_when: False
-  changed_when: False
-  when: _repo_folder_stat.stat.exists
-
-# NOTE(jrosser) remove this task in release after Z
-- name: Ensure tar is present for repo server shared filesystem migration
-  package:
-    name:
-      - tar
-    state: present
-
-# NOTE(jrosser) remove this task in release after Z
-- name: Archive existing content from repo server for migration from lsync to shared filesystem
-  command:
-    chdir: "{{ repo_service_home_folder }}"
-    cmd: tar czf /opt/repo_server_lsync.tar.gz repo
-  when:
-    - _repo_folder_stat.stat.exists
-    - _repo_folder_mountpoint.rc != 0
-  tags:
-    - skip_ansible_lint
-
-# NOTE(jrosser) remove this task in release after Z
-- name: Remove folder dir during migration from lsyncd
-  file:
-    path: "{{ repo_service_home_folder }}/repo"
-    state: absent
-  when:
-    - _repo_folder_stat.stat.exists
-    - _repo_folder_mountpoint.rc != 0
-  notify:
-    - Reload nginx
-
 - name: Mount any remote volumes
   include_role:
     name: systemd_mount
@@ -88,28 +45,6 @@
   delay: 2
   until: _repo_folder_is_mounted.rc == 0
   when: repo_server_systemd_mounts | length > 0
-
-# NOTE(jrosser) remove this task in release after Z
-- name: Restore repo content from archive into new shared filesystem
-  unarchive:
-    src: /opt/repo_server_lsync.tar.gz
-    dest: "{{ repo_service_home_folder }}"
-    remote_src: true
-    exclude: ".ssh"
-  when:
-    - _repo_folder_stat.stat.exists
-    - _repo_folder_mountpoint.rc != 0
-    - ('repo_all' in group_names and inventory_hostname == (groups['repo_all'] | intersect(ansible_play_hosts)) | first) | bool
-
-# NOTE(jrosser) remove this task in release after Z
-- name: Fix permissions on restored repo content
-  file:
-    path: "{{ repo_service_home_folder }}"
-    owner: "{{ repo_service_user_name }}"
-    group: "{{ repo_service_group_name }}"
-    recurse: yes
-  when:
-    - ('repo_all' in group_names and inventory_hostname == (groups['repo_all'] | intersect(ansible_play_hosts)) | first) | bool
 
 - name: File and directory setup (non-root user)
   file:
