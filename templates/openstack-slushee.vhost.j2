@@ -20,6 +20,6 @@ server {
     location / {
         root {{ repo_service_home_folder }}/repo/;
         autoindex on;
-        expires 5h;
+        expires -1;
     }
 }
