@@ -13,15 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Reload nginx
+- name: Restart web server
   service:
-    name: "nginx"
+    name: "{{ repo_system_service_name }}"
     enabled: yes
-    state: restarted
+    state: "restarted"
     daemon_reload: "{{ (ansible_facts['service_mgr'] == 'systemd') | ternary('yes', omit) }}"
-  register: _restart
-  until: _restart is success
-  retries: 5
-  delay: 2
   listen:
     - "cert installed"

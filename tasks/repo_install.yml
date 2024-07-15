@@ -13,20 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Remove old nginx repo
-  yum_repository:
-    name: "nginx"
+# TODO: remove this task after 2025.1 (Epoxy) release
+- name: Remove nginx web server
+  package:
+    name: nginx-*
     state: absent
-  register: _repo_removed
-  when:
-    - ansible_facts['pkg_mgr'] == 'dnf'
-
-- name: Clean yum metadata when nginx repo is removed
-  command: dnf clean metadata
-  changed_when: false
-  when:
-    - ansible_facts['pkg_mgr'] == 'dnf'
-    - _repo_removed is changed
 
 - name: Install distro packages
   package:

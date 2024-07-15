@@ -16,10 +16,6 @@
 ## Verbosity Options
 debug: False
 
-## Cap the maximum number of threads / workers when a user value is unspecified.
-repo_nginx_threads_max: 16
-repo_nginx_threads: "{{ [[ansible_facts['processor_vcpus'] | default(2) // 2, 1] | max, repo_nginx_threads_max] | min }}"
-
 ## APT Cache Options
 cache_timeout: 600
 
@@ -32,12 +28,38 @@ repo_worker_connections: 1024
 repo_server_name: openstack-slushee
 
 repo_service_home_folder: /var/www
-repo_service_user_name: nginx
+repo_service_user_name: www-data
 repo_service_group_name: www-data
+repo_system_service_name: "{{ _repo_system_service_name }}"
 
 # Main web server port
 repo_server_bind_address: "{{ openstack_service_bind_address | default('0.0.0.0') }}"
 repo_server_port: 8181
+
+repo_vhost_enable_path: "{{ _repo_vhost_enable_path }}"
+
+repo_apache_conf: "{{ _repo_apache_conf }}"
+repo_apache_configs: "{{ _repo_apache_configs }}"
+repo_apache_custom_log_format: '"%h %l %u \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""'
+repo_apache_default_sites: "{{ _repo_apache_default_sites }}"
+repo_apache_log_level: info
+# List of modules to enable are respected only for Debian Family
+repo_apache_modules: "{{ _repo_apache_modules }}"
+
+# MPM tunables
+repo_apache_mpm_backend: "{{ openstack_apache_mpm_backend | default('event') }}"
+repo_apache_threads_max: "{{ openstack_apache_threads_max | default(16) }}"
+repo_apache_mpm_server_limit: "{{ [[ansible_facts['processor_vcpus'] | default(2) // 2, 1] | max, repo_apache_threads_max | int] | min }}"
+repo_apache_mpm_start_servers: "{{ openstack_apache_start_servers | default(2) }}"
+repo_apache_mpm_min_spare_threads: "{{ openstack_apache_min_spare_threads | default(25) }}"
+repo_apache_mpm_max_spare_threads: "{{ openstack_apache_max_spare_threads | default(75) }}"
+repo_apache_mpm_thread_limit: "{{ openstack_apache_thread_limit | default(64) }}"
+repo_apache_mpm_thread_child: "{{ openstack_apache_thread_child | default(25) }}"
+repo_apache_mpm_max_requests: "{{ repo_apache_mpm_server_limit | int * repo_apache_mpm_thread_child | int }}"
+repo_apache_mpm_max_conn_child: "{{ openstack_apache_max_conn_child | default(0) }}"
+
+repo_apache_security_conf: "{{ _repo_apache_security_conf }}"
+## Cap the maximum number of threads / workers when a user value is unspecified.
 
 # This directory is used by the repo_build, and will cause problems if synced
 # to repo_containers with other releases.
@@ -92,6 +114,11 @@ repo_pki_certificates:
 repo_ssl_cert: /etc/ssl/certs/repo.pem
 repo_ssl_key: /etc/ssl/private/repo.key
 repo_ssl_ca_cert: /etc/ssl/certs/repo-ca.pem
+repo_ssl_protocol: "{{ ssl_protocol | default('ALL -SSLv2 -SSLv3 -TLSv1 -TLSv1.1') }}"
+# TLS v1.2 and below
+repo_ssl_cipher_suite_tls12: "{{ ssl_cipher_suite | default('ECDH+AESGCM:ECDH+CHACHA20:ECDH+AES256:ECDH+AES128:!aNULL:!SHA1:!AESCCM') }}"
+# TLS v1.3
+repo_ssl_cipher_suite_tls13: "{{ ssl_cipher_suite_tls13 | default('TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256') }}"
 
 # Installation details for SSL certificates
 repo_pki_install_certificates:

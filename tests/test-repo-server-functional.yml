@@ -17,15 +17,6 @@
   hosts: repo_all
   user: root
   tasks:
-    - name: Check nginx is running
-      shell: "ps auxf | grep nginx"
-      register: ps_auxf_nginx
-      until: ps_auxf_nginx.stdout.find('master process') != -1
-      retries: 5
-      delay: 2
-      tags:
-        - skip_ansible_lint
-
     - name: Check service is available
       uri:
         url: "http://localhost:8181"

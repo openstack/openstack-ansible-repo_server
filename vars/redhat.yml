@@ -15,12 +15,36 @@
 
 systemd_utils_prefix: "/lib/systemd"
 
-repo_nginx_pid: /run/nginx.pid
+_repo_system_service_name: httpd
+
+_repo_vhost_enable_path: "/etc/{{ repo_system_service_name }}/conf.d"
+
+_repo_apache_default_sites:
+  - "/etc/httpd/conf.d/userdir.conf"
+  - "/etc/httpd/conf.d/welcome.conf"
+
+_repo_apache_configs:
+  - src: "apache_ports.conf.j2"
+    dest: "{{ repo_vhost_enable_path }}/ports.conf"
+    owner: "root"
+    group: "root"
+  - src: "openstack_slushee.vhost.j2"
+    dest: "/etc/{{ repo_system_service_name }}/sites-available/openstack_slushee.conf"
+    owner: "root"
+    group: "root"
+  - src: "apache_mpm.conf.j2"
+    dest: "/etc/httpd/conf.modules.d/mpm_{{ repo_apache_mpm_backend }}.conf"
+    owner: "root"
+    group: "root"
+
+_repo_apache_conf: "/etc/httpd/conf/httpd.conf"
+_repo_apache_security_conf: "{{ repo_apache_conf }}"
 
 # NOTE(jrosser) remove this when rsyncd cleanup task are no longer required
 rsyncd_service_name: rsyncd
 
 repo_server_distro_packages:
   - git
-  - nginx
+  - httpd
+  - "{{ repo_backend_ssl | ternary('mod_ssl', '') }}"
   - sudo

@@ -1,0 +1,41 @@
+# {{ ansible_managed }}
+
+Listen {{ repo_server_bind_address }}:{{ repo_server_port }}
+
+<VirtualHost {{ repo_server_bind_address }}:{{ repo_server_port }}>
+    ServerName {{ repo_server_name }}
+    LogLevel  {{ repo_apache_log_level }}
+    ErrorLog  syslog:daemon
+    CustomLog "|/usr/bin/env logger -p daemon.info -t {{ repo_system_service_name }}" {{ repo_apache_custom_log_format }}
+    DocumentRoot {{ repo_service_home_folder }}/repo
+{% if repo_backend_ssl | bool %}
+    SSLEngine on
+    SSLCertificateFile    {{ repo_ssl_cert }}
+    SSLCertificateKeyFile {{ repo_ssl_key }}
+    {% if repo_user_ssl_ca_cert is defined -%}
+    SSLCACertificateFile  {{ repo_ssl_ca_cert }}
+    {% endif -%}
+    SSLCompression Off
+    SSLProtocol {{ repo_ssl_protocol }}
+    SSLHonorCipherOrder On
+    {% if repo_ssl_cipher_suite_tls12 != "" -%}
+    SSLCipherSuite {{ repo_ssl_cipher_suite_tls12 }}
+    {% endif -%}
+    {% if repo_ssl_cipher_suite_tls13 != "" -%}
+    SSLCipherSuite TLSv1.3 {{ repo_ssl_cipher_suite_tls13 }}
+    {% endif -%}
+    SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+{% endif %}
+
+    Header set X-WHOAMI "OpenStack Private Slushee Repository {{ inventory_hostname }}"
+
+    <Directory {{ repo_service_home_folder }}/repo>
+      Options +FollowSymlinks +Indexes
+      AllowOverride None
+      AddOutputFilterByType DEFLATE application/json
+      AddOutputFilterByType DEFLATE text/javascript
+      AddOutputFilterByType DEFLATE text/plain
+      AddOutputFilterByType DEFLATE text/xml
+      Require ip {{ (container_networks['management_address']['address'] ~ '/' ~ container_networks['management_address']['netmask']) | ipaddr('subnet') }}
+    </Directory>
+</VirtualHost>
