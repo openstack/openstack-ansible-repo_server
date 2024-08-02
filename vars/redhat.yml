@@ -22,6 +22,7 @@ _repo_vhost_enable_path: "/etc/{{ repo_system_service_name }}/conf.d"
 _repo_apache_default_sites:
   - "/etc/httpd/conf.d/userdir.conf"
   - "/etc/httpd/conf.d/welcome.conf"
+  - "/etc/httpd/conf.d/ssl.conf"
 
 _repo_apache_configs:
   - src: "apache_ports.conf.j2"
