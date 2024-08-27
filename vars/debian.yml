@@ -52,9 +52,6 @@ _repo_apache_configs:
 _repo_apache_conf: "/etc/apache2/apache2.conf"
 _repo_apache_security_conf: "/etc/apache2/conf-available/security.conf"
 
-# NOTE(jrosser) remove this once rsync cleanup tasks are no longer required
-rsyncd_service_name: rsync
-
 repo_server_distro_packages:
   - git
   - apache2

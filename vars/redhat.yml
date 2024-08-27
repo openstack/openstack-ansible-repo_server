@@ -41,9 +41,6 @@ _repo_apache_configs:
 _repo_apache_conf: "/etc/httpd/conf/httpd.conf"
 _repo_apache_security_conf: "{{ repo_apache_conf }}"
 
-# NOTE(jrosser) remove this when rsyncd cleanup task are no longer required
-rsyncd_service_name: rsyncd
-
 repo_server_distro_packages:
   - git
   - httpd

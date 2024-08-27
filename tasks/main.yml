@@ -29,12 +29,6 @@
   tags:
     - always
 
-# TODO (jrosser) Remove this task for the Z release
-- name: Including repo_sync_cleanup tasks
-  ansible.builtin.include_tasks: repo_sync_cleanup.yml
-  tags:
-    - repo_server-install
-
 - name: Including repo_pre_install tasks
   ansible.builtin.include_tasks: repo_pre_install.yml
   tags:
