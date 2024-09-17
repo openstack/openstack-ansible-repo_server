@@ -58,6 +58,7 @@
     - path: "{{ repo_service_home_folder }}/.ssh"
       mode: "2700"
     - path: "{{ repo_service_home_folder }}/repo"
+      mode: "0755"
     - path: "{{ repo_service_home_folder }}/repo/links"
     - path: "{{ repo_service_home_folder }}/repo/os-releases"
     - path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}"
