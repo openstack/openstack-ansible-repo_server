@@ -19,10 +19,16 @@ _repo_system_service_name: apache2
 
 _repo_vhost_enable_path: "/etc/{{ repo_system_service_name }}/sites-enabled"
 
+_repo_apache_mpms:
+  - name: "mpm_event"
+    state: "{{ (repo_apache_mpm_backend == 'event') | ternary('present', 'absent') }}"
+  - name: "mpm_worker"
+    state: "{{ (repo_apache_mpm_backend == 'worker') | ternary('present', 'absent') }}"
+  - name: "mpm_prefork"
+    state: "{{ (repo_apache_mpm_backend == 'prefork') | ternary('present', 'absent') }}"
+
 _repo_apache_modules:
   - name: "ssl"
-    state: "present"
-  - name: "mpm_{{ repo_apache_mpm_backend }}"
     state: "present"
   - name: "rewrite"
     state: "present"

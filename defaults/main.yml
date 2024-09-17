@@ -45,6 +45,7 @@ repo_apache_default_sites: "{{ _repo_apache_default_sites }}"
 repo_apache_log_level: info
 # List of modules to enable are respected only for Debian Family
 repo_apache_modules: "{{ _repo_apache_modules }}"
+repo_apache_mpms: "{{ _repo_apache_mpms }}"
 
 # MPM tunables
 repo_apache_mpm_backend: "{{ openstack_apache_mpm_backend | default('event') }}"
