@@ -19,6 +19,28 @@
     name: pack.threads
     value: '0'
 
+- name: Ensure apache2 MPM for Debian/Ubuntu
+  apache2_module:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    ignore_configcheck: yes
+    warn_mpm_absent: false
+  with_items: "{{ repo_apache_mpms | sort(attribute='state') }}"
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+  notify: Restart web server
+
+- name: Ensure apache2 MPM for EL
+  copy:
+    content: |
+      LoadModule mpm_{{ repo_apache_mpm_backend }}_module modules/mod_mpm_{{ repo_apache_mpm_backend }}.so
+
+    dest: /etc/httpd/conf.modules.d/00-mpm.conf
+    mode: "0644"
+  when:
+    - ansible_facts['pkg_mgr'] == 'dnf'
+  notify: Restart web server
+
 - name: Enable apache2 modules
   apache2_module:
     name: "{{ item.name }}"
