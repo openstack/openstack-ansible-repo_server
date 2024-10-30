@@ -26,7 +26,12 @@
     url: "{{ user_requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
     dest: "{{ repo_upper_constraints_path }}/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
     mode: "0644"
+    timeout: 30
   when: requirements_git_repo is search('http')
+  register: _fetch_uc_https
+  until: _fetch_uc_https is success
+  retries: 5
+  delay: 5
   delegate_to: localhost
 
 - name: Retrieve local filesystem upper constraints in CI
