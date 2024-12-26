@@ -13,36 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-systemd_utils_prefix: "/lib/systemd"
-
-_repo_system_service_name: httpd
-
-_repo_vhost_enable_path: "/etc/{{ repo_system_service_name }}/conf.d"
-
-_repo_apache_default_sites:
-  - "/etc/httpd/conf.d/userdir.conf"
-  - "/etc/httpd/conf.d/welcome.conf"
-  - "/etc/httpd/conf.d/ssl.conf"
-
-_repo_apache_configs:
-  - src: "apache_ports.conf.j2"
-    dest: "{{ repo_vhost_enable_path }}/ports.conf"
-    owner: "root"
-    group: "root"
-  - src: "openstack_slushee.vhost.j2"
-    dest: "/etc/{{ repo_system_service_name }}/sites-available/openstack_slushee.conf"
-    owner: "root"
-    group: "root"
-  - src: "apache_mpm.conf.j2"
-    dest: "/etc/httpd/conf.modules.d/mpm_{{ repo_apache_mpm_backend }}.conf"
-    owner: "root"
-    group: "root"
-
-_repo_apache_conf: "/etc/httpd/conf/httpd.conf"
-_repo_apache_security_conf: "{{ repo_apache_conf }}"
+_repo_service_user_name: apache
+_repo_service_group_name: apache
+_repo_service_home_folder: /usr/share/httpd
 
 repo_server_distro_packages:
   - git
-  - httpd
-  - "{{ repo_backend_ssl | ternary('mod_ssl', '') }}"
+  - python3-devel
   - sudo

@@ -19,14 +19,14 @@
     state: "present"
     system: "yes"
 
-- name: Create the nginx system user
+- name: Create the system user
   user:
     name: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
-    comment: "Nginx repo user"
-    shell: "/bin/bash"
+    comment: "Apache Web Server user"
+    shell: "/usr/bin/false"
     system: "yes"
-    createhome: "yes"
+    createhome: "no"
     home: "{{ repo_service_home_folder }}"
 
 - name: Mount any remote volumes
@@ -37,8 +37,8 @@
   when: repo_server_systemd_mounts | length > 0
 
 # NOTE(jrosser) ensure there is no race condition between mounting and using the filesystem
-- name: Wait until mount will finish for {{ repo_service_home_folder }}
-  command: mountpoint -q {{ repo_service_home_folder }}/repo
+- name: Wait until mount will finish for {{ repo_server_directory_root }}
+  command: mountpoint -q {{ repo_server_directory_root }}
   changed_when: false
   register: _repo_folder_is_mounted
   retries: 5
@@ -55,21 +55,19 @@
     group: "{{ repo_service_group_name }}"
     mode: "{{ item.mode | default('2755') }}"
   with_items:
-    - path: "{{ repo_service_home_folder }}"
     - path: "{{ repo_service_home_folder }}/.ssh"
       state: absent
-    - path: "{{ repo_service_home_folder }}/repo"
-      mode: "0755"
-    - path: "{{ repo_service_home_folder }}/repo/links"
+    - path: "{{ repo_server_directory_root }}"
+      mode: "0750"
+    - path: "{{ repo_server_directory_root }}/links"
       state: absent
-    - path: "{{ repo_service_home_folder }}/repo/os-releases"
-    - path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}"
-    - path: "{{ repo_service_home_folder }}/repo/pools"
+    - path: "{{ repo_server_directory_root }}/os-releases"
+    - path: "{{ repo_server_directory_root }}/os-releases/{{ openstack_release }}"
+    - path: "{{ repo_server_directory_root }}/pools"
       state: absent
-    - path: "{{ repo_service_home_folder }}/repo/venvs"
+    - path: "{{ repo_server_directory_root }}/venvs"
       state: absent
-    - path: "{{ repo_service_home_folder }}/repo/constraints"
-    - path: "/etc/{{ repo_system_service_name }}/sites-available"
+    - path: "{{ repo_server_directory_root }}/constraints"
     - path: "/var/lib/nginx"
       state: absent
     - path: "/var/log/nginx"

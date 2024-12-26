@@ -29,3 +29,39 @@
   until: install_packages is success
   retries: 5
   delay: 5
+
+- name: Including HTTPD role
+  ansible.builtin.import_role:
+    name: httpd
+  vars:
+    httpd_service_user_name: "{{ repo_service_user_name }}"
+    httpd_service_group_name: "{{ repo_service_group_name }}"
+    httpd_pki_dir: "{{ repo_pki_dir }}"
+    httpd_pki_setup_host: "{{ repo_pki_setup_host }}"
+    httpd_ssl_protocol: "{{ repo_ssl_protocol }}"
+    httpd_ssl_cipher_suite_tls12: "{{ repo_ssl_cipher_suite_tls12 }}"
+    httpd_ssl_cipher_suite_tls13: "{{ repo_ssl_cipher_suite_tls13 }}"
+    httpd_pki_regen_cert: "{{ repo_pki_regen_cert }}"
+    httpd_vhosts:
+      - name: openstack_slushee
+        address: "{{ repo_server_bind_address }}"
+        port: "{{ repo_server_port }}"
+        log_level: "{{ repo_apache_log_level }}"
+        document_root: "{{ repo_server_directory_root }}"
+        server_name: "{{ repo_server_name }}"
+        headers:
+          - 'Header set X-WHOAMI "OpenStack Private Slushee Repository {{ inventory_hostname }}"'
+        directories:
+          - path: "{{ repo_server_directory_root }}"
+            options:
+              - Options +FollowSymlinks +Indexes
+              - AllowOverride None
+              - AddOutputFilterByType DEFLATE application/json
+              - AddOutputFilterByType DEFLATE text/javascript
+              - AddOutputFilterByType DEFLATE text/plain
+              - AddOutputFilterByType DEFLATE text/xml
+        ssl: "{{ repo_backend_ssl | ternary(_repo_httpd_vhost_ssl, false) }}"
+  tags:
+    - repo_server-install
+    - repo_server-config
+    - httpd

@@ -13,52 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-systemd_utils_prefix: "/lib/systemd"
-
-_repo_system_service_name: apache2
-
-_repo_vhost_enable_path: "/etc/{{ repo_system_service_name }}/sites-enabled"
-
-_repo_apache_mpms:
-  - name: "mpm_event"
-    state: "{{ (repo_apache_mpm_backend == 'event') | ternary('present', 'absent') }}"
-  - name: "mpm_worker"
-    state: "{{ (repo_apache_mpm_backend == 'worker') | ternary('present', 'absent') }}"
-  - name: "mpm_prefork"
-    state: "{{ (repo_apache_mpm_backend == 'prefork') | ternary('present', 'absent') }}"
-
-_repo_apache_modules:
-  - name: "ssl"
-    state: "present"
-  - name: "rewrite"
-    state: "present"
-  - name: "headers"
-    state: "present"
-  - name: "deflate"
-    state: "present"
-
-_repo_apache_default_sites:
-  - "{{ repo_vhost_enable_path }}/000-default.conf"
-  - /etc/apache2/conf-enabled/other-vhosts-access-log.conf
-
-_repo_apache_configs:
-  - src: "apache_ports.conf.j2"
-    dest: "/etc/apache2/ports.conf"
-    owner: "root"
-    group: "root"
-  - src: "openstack_slushee.vhost.j2"
-    dest: "/etc/{{ repo_system_service_name }}/sites-available/openstack_slushee.conf"
-    owner: "root"
-    group: "root"
-  - src: "apache_mpm.conf.j2"
-    dest: "/etc/apache2/mods-available/mpm_{{ repo_apache_mpm_backend }}.conf"
-    owner: "root"
-    group: "root"
-
-_repo_apache_conf: "/etc/apache2/apache2.conf"
-_repo_apache_security_conf: "/etc/apache2/conf-available/security.conf"
+_repo_service_user_name: www-data
+_repo_service_group_name: www-data
+_repo_service_home_folder: /var/www
 
 repo_server_distro_packages:
   - git
-  - apache2
+  - python3-dev
   - sudo
