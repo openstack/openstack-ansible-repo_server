@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Ensure deploy host u-c directory exists
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ repo_upper_constraints_path }}"
     mode: "0755"
@@ -22,7 +22,7 @@
 
 # by default the u-c file is retrieved by https
 - name: Retrieve upper constraints using https
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ user_requirements_git_url | default('https://releases.openstack.org/constraints/upper/' ~ requirements_git_install_branch | default('master')) }}"
     dest: "{{ repo_upper_constraints_path }}/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
     mode: "0644"
@@ -35,7 +35,7 @@
   delegate_to: localhost
 
 - name: Retrieve local filesystem upper constraints in CI
-  command:
+  ansible.builtin.command:
     git --git-dir={{ requirements_git_repo.split('file://')[1] }}/.git show {{ requirements_git_install_branch | default('master') }}:upper-constraints.txt
   when: requirements_git_repo is search('file://')
   register: _uc_contents_git
@@ -44,7 +44,7 @@
     - skip_ansible_lint
 
 - name: Copy local upper constraints content to a file in CI
-  copy:
+  ansible.builtin.copy:
     content: "{{ _uc_contents_git.stdout }}"
     dest: "{{ repo_upper_constraints_path }}/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
     mode: "0644"
@@ -52,7 +52,7 @@
   delegate_to: localhost
 
 - name: Copy all constraints files from the deploy host to the first repo server
-  copy:
+  ansible.builtin.copy:
     src: "{{ repo_upper_constraints_path }}/"
     dest: "{{ repo_server_directory_root }}/constraints/"
     owner: "{{ repo_service_user_name }}"
@@ -60,7 +60,7 @@
     mode: "0644"
 
 - name: Create a symlink for constraints file
-  file:
+  ansible.builtin.file:
     src: "{{ repo_server_directory_root }}/constraints/{{ 'upper_constraints_' ~ requirements_git_install_branch | default('master') ~ '.txt' }}"
     dest: "{{ repo_server_directory_root }}/constraints/upper_constraints_cached.txt"
     owner: "{{ repo_service_user_name }}"

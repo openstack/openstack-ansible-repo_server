@@ -14,13 +14,13 @@
 # limitations under the License.
 
 - name: Create the system group
-  group:
+  ansible.builtin.group:
     name: "{{ repo_service_group_name }}"
     state: "present"
     system: "yes"
 
 - name: Create the system user
-  user:
+  ansible.builtin.user:
     name: "{{ repo_service_user_name }}"
     group: "{{ repo_service_group_name }}"
     comment: "Apache Web Server user"
@@ -30,7 +30,7 @@
     home: "{{ repo_service_home_folder }}"
 
 - name: Mount any remote volumes
-  include_role:
+  ansible.builtin.include_role:
     name: systemd_mount
   vars:
     systemd_mounts: "{{ repo_server_systemd_mounts }}"
@@ -38,7 +38,7 @@
 
 # NOTE(jrosser) ensure there is no race condition between mounting and using the filesystem
 - name: Wait until mount will finish for {{ repo_server_directory_root }}
-  command: mountpoint -q {{ repo_server_directory_root }}
+  ansible.builtin.command: mountpoint -q {{ repo_server_directory_root }}
   changed_when: false
   register: _repo_folder_is_mounted
   retries: 5
@@ -48,7 +48,7 @@
 
 # TODO(noonedeadpunk): Clean-up absent paths after 2025.1
 - name: File and directory setup (non-root user)
-  file:
+  ansible.builtin.file:
     path: "{{ item.path }}"
     state: "{{ item.state | default('directory') }}"
     owner: "{{ repo_service_user_name }}"
@@ -75,7 +75,7 @@
 
 # NOTE: Remove after 2025.1 (Epoxy) release
 - name: File and directory setup (root user)
-  file:
+  ansible.builtin.file:
     path: "{{ item.path }}"
     state: "{{ item.state | default('directory') }}"
     owner: "root"

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Enable git automatic thread count detection
-  git_config:
+  community.general.git_config:
     scope: system
     name: pack.threads
     value: '0'
