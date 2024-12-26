@@ -62,10 +62,6 @@ repo_apache_mpm_max_conn_child: "{{ openstack_apache_max_conn_child | default(0)
 repo_apache_security_conf: "{{ _repo_apache_security_conf }}"
 ## Cap the maximum number of threads / workers when a user value is unspecified.
 
-# This directory is used by the repo_build, and will cause problems if synced
-# to repo_containers with other releases.
-repo_build_global_links_dirname: links
-
 # This directory is used on the deploy host to create u-c files which are then
 # copied to the repo server and served by http. Any other files in this
 # directory placed by the deployer will also be transferred

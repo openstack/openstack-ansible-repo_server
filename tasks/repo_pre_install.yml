@@ -46,6 +46,7 @@
   until: _repo_folder_is_mounted.rc == 0
   when: repo_server_systemd_mounts | length > 0
 
+# TODO(noonedeadpunk): Clean-up absent paths after 2025.1
 - name: File and directory setup (non-root user)
   file:
     path: "{{ item.path }}"
@@ -56,14 +57,17 @@
   with_items:
     - path: "{{ repo_service_home_folder }}"
     - path: "{{ repo_service_home_folder }}/.ssh"
-      mode: "2700"
+      state: absent
     - path: "{{ repo_service_home_folder }}/repo"
       mode: "0755"
     - path: "{{ repo_service_home_folder }}/repo/links"
+      state: absent
     - path: "{{ repo_service_home_folder }}/repo/os-releases"
     - path: "{{ repo_service_home_folder }}/repo/os-releases/{{ openstack_release }}"
     - path: "{{ repo_service_home_folder }}/repo/pools"
+      state: absent
     - path: "{{ repo_service_home_folder }}/repo/venvs"
+      state: absent
     - path: "{{ repo_service_home_folder }}/repo/constraints"
     - path: "/etc/{{ repo_system_service_name }}/sites-available"
     - path: "/var/lib/nginx"
