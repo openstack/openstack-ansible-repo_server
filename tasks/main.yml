@@ -29,13 +29,13 @@
   tags:
     - always
 
-- name: Including repo_pre_install tasks
-  ansible.builtin.include_tasks: repo_pre_install.yml
+- name: Importing repo_pre_install tasks
+  ansible.builtin.import_tasks: repo_pre_install.yml
   tags:
     - repo_server-install
 
-- name: Including repo_install tasks
-  ansible.builtin.include_tasks: repo_install.yml
+- name: Importing repo_install tasks
+  ansible.builtin.import_tasks: repo_install.yml
   tags:
     - repo_server-install
 
@@ -59,8 +59,8 @@
   tags:
     - always
 
-- name: Including repo_post_install tasks
-  ansible.builtin.include_tasks: repo_post_install.yml
+- name: Importing repo_post_install tasks
+  ansible.builtin.import_tasks: repo_post_install.yml
   tags:
     - repo_server-config
 
@@ -72,6 +72,10 @@
 
 - name: Including repo_install_constraints tasks
   ansible.builtin.include_tasks: repo_install_constraints.yml
+  args:
+    apply:
+      tags:
+        - repo_server-config
   when: inventory_hostname == groups['repo_all'][0]
   tags: repo_server-config
 
