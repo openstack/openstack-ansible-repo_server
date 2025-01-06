@@ -36,6 +36,5 @@ Listen {{ repo_server_bind_address }}:{{ repo_server_port }}
       AddOutputFilterByType DEFLATE text/javascript
       AddOutputFilterByType DEFLATE text/plain
       AddOutputFilterByType DEFLATE text/xml
-      Require ip {{ (container_networks['management_address']['address'] ~ '/' ~ container_networks['management_address']['netmask']) | ipaddr('subnet') }}
     </Directory>
 </VirtualHost>
