@@ -14,7 +14,7 @@
 # limitations under the License.
 
 ## Verbosity Options
-debug: False
+debug: false
 
 ## APT Cache Options
 cache_timeout: 600
@@ -70,7 +70,7 @@ repo_pki_setup_host: "{{ openstack_pki_setup_host | default('localhost') }}"
 
 # repo server certificate SAN if user did not provide own certs
 repo_pki_san: "{{ openstack_pki_san | default('DNS:' ~ ansible_facts['hostname'] ~ ',IP:' ~ management_address) }}"
-repo_pki_regen_cert: ''
+repo_pki_regen_cert: ""
 
 repo_ssl_protocol: "{{ ssl_protocol | default('ALL -SSLv2 -SSLv3 -TLSv1 -TLSv1.1') }}"
 # TLS v1.2 and below
