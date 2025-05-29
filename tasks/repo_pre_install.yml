@@ -58,7 +58,7 @@
     - path: "{{ repo_service_home_folder }}/.ssh"
       state: absent
     - path: "{{ repo_server_directory_root }}"
-      mode: "0750"
+      mode: "0755"
     - path: "{{ repo_server_directory_root }}/links"
       state: absent
     - path: "{{ repo_server_directory_root }}/os-releases"
