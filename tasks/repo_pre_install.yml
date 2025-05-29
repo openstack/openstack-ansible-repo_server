@@ -46,7 +46,6 @@
   until: _repo_folder_is_mounted.rc == 0
   when: repo_server_systemd_mounts | length > 0
 
-# TODO(noonedeadpunk): Clean-up absent paths after 2025.1
 - name: File and directory setup (non-root user)
   ansible.builtin.file:
     path: "{{ item.path }}"
@@ -55,36 +54,8 @@
     group: "{{ repo_service_group_name }}"
     mode: "{{ item.mode | default('2755') }}"
   with_items:
-    - path: "{{ repo_service_home_folder }}/.ssh"
-      state: absent
     - path: "{{ repo_server_directory_root }}"
       mode: "0755"
-    - path: "{{ repo_server_directory_root }}/links"
-      state: absent
     - path: "{{ repo_server_directory_root }}/os-releases"
     - path: "{{ repo_server_directory_root }}/os-releases/{{ openstack_release }}"
-    - path: "{{ repo_server_directory_root }}/pools"
-      state: absent
-    - path: "{{ repo_server_directory_root }}/venvs"
-      state: absent
     - path: "{{ repo_server_directory_root }}/constraints"
-    - path: "/var/lib/nginx"
-      state: absent
-    - path: "/var/log/nginx"
-      state: absent
-
-# NOTE: Remove after 2025.1 (Epoxy) release
-- name: File and directory setup (root user)
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: "{{ item.state | default('directory') }}"
-    owner: "root"
-    group: "root"
-    mode: "0755"
-  with_items:
-    - path: "/etc/nginx/conf.d"
-      state: absent
-    - path: "/etc/nginx/sites-available"
-      state: absent
-    - path: "/etc/nginx/sites-enabled"
-      state: absent

@@ -13,12 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: remove this task after 2025.1 (Epoxy) release
-- name: Remove nginx web server
-  ansible.builtin.package:
-    name: nginx-*
-    state: absent
-
 - name: Install distro packages
   ansible.builtin.package:
     name: "{{ repo_server_distro_packages | reject('equalto', '') | list }}"
