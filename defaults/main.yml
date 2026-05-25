@@ -40,7 +40,9 @@ repo_apache_log_level: info
 # This directory is used on the deploy host to create u-c files which are then
 # copied to the repo server and served by http. Any other files in this
 # directory placed by the deployer will also be transferred
+repo_upper_constraints_repo: "{{ requirements_git_repo }}"
 repo_upper_constraints_path: "/etc/openstack_deploy/upper-constraints"
+repo_global_constraints_list: "{{ venv_build_global_constraints }}"
 
 # Multiple repo servers must have a shared /var/www/repo
 repo_server_systemd_mounts: []
